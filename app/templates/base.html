@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
+    {% block links %}{% endblock %}
+</head>
+<body>
+    <header>
+        {% if registration %}
+            <div class="header">
+                <img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="">
+                <button class="log-in" type="button">Увійти</button>
+            </div>
+        {% endif %}
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        {% if registration %}
+            <div class="footer">
+                <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
+            </div>
+        {% endif %}
+    </footer>
+</body>
+</html>
