@@ -1,0 +1,46 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    border-radius: 4px;
+}
+.form-input input{
+    height: 36px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-input p{
+    font-size: 14px;
+    color: rgba(113, 113, 122, 1);
+
+}
+
+.policy{
+    display: flex;
+    align-items: center;
+    color: rgba(179, 179, 197, 1);
+
+}
+
+.send-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 15px;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+}

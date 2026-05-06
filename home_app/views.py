@@ -1,14 +1,14 @@
-import flask, werkzeug.security as security
+import flask, werkzeug.security as security, flask_login
 from .apps import *
 from .models import User
 from app.db import DATABASE
 
-# @main_page.route("/", methods = ["GET", "POST"])
-# def render_home():
-#     return flask.render_template("home.html")
+
 
 @registration.route("/", methods = ["GET", "POST"])
 def render_registration():
+    if flask_login.current_user.is_authenticated:
+        return flask.render_template("main_page.html", main_page = True)
     
     if flask.request.method == "POST":
         email = flask.request.form.get("email")
@@ -18,7 +18,6 @@ def render_registration():
             if len(password) < 8:
                 return flask.render_template(
                     "registration.html", 
-                    error = "Password must be at least 8 characters long.",
                     registration = True,
                 )
 
@@ -26,7 +25,6 @@ def render_registration():
             if check_user:
                 return flask.render_template(
                     "registration.html", 
-                    error = "User with this email already exists.",
                     registration = True,
                 )
             
@@ -39,8 +37,38 @@ def render_registration():
             )
             DATABASE.session.add(user)
             DATABASE.session.commit()
+            return flask.redirect("/main_page")
+        
     return flask.render_template("registration.html", registration = True)
+
+@main_page.route("/main_page", methods = ["GET", "POST"])
+@flask_login.login_required
+def render_home():
+    return flask.render_template("main_page.html", main_page=True)
 
 @login.route("/login", methods = ["GET", "POST"])
 def render_login():
-    return flask.render_template("login.html")
+    if flask_login.current_user.is_authenticated:
+        return flask.redirect("/main_page")
+    
+    if flask.request.method == "POST":
+        email = flask.request.form.get("email")
+        password = flask.request.form.get("password")
+
+        if email and password:
+            user = User.query.filter_by(email = email).scalar()
+            if user and security.check_password_hash(user.password_hash, password):
+                flask_login.login_user(user)
+                return flask.redirect("/main_page")
+
+    return flask.render_template("login.html", login = True)
+
+@main_page.route("/logout")
+def logout():
+    flask_login.logout_user()
+    return flask.redirect(flask.url_for('login.render_login'))
+    
+    # render_template(
+    #     template_name_or_list = "login.html", 
+    #     login = True,
+    # )

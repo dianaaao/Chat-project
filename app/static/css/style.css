@@ -38,6 +38,28 @@ main{
     background-color: white;
     color: black;
 }
+.log-in a {
+    text-decoration: none;   /* прибирає підкреслення */
+    color: inherit;          /* колір як у батьківського елемента */
+}
+
+.register{
+    position: absolute;
+    right: 40px;
+
+    width: auto;
+    height: 36px;
+
+    border: 1px solid rgba(228, 228, 231, 1);
+    border-radius: 6px;
+    background-color: white;
+    color: black;
+    list-style: none;
+}
+.register a {
+    text-decoration: none;
+    color: inherit;
+}
 
 .footer{
     display: flex;
