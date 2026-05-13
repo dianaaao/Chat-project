@@ -30,8 +30,8 @@ def render_registration():
             
             pass_hash = security.generate_password_hash(password)
             user = User(
-                first_name="Test",
-                last_name="User",   
+                # first_name="Test",
+                # last_name="User",   
                 email = email,
                 password_hash = pass_hash,
             )
@@ -42,9 +42,9 @@ def render_registration():
     return flask.render_template("registration.html", registration = True)
 
 @main_page.route("/main_page", methods = ["GET", "POST"])
-@flask_login.login_required
+@flask_login.login_required # для безпеки, щоб не можна було зайти на головну сторінку без авторизації
 def render_home():
-    return flask.render_template("main_page.html", main_page=True)
+    return flask.render_template("main_page.html", main_page = True)
 
 @login.route("/login", methods = ["GET", "POST"])
 def render_login():
@@ -67,8 +67,4 @@ def render_login():
 def logout():
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login.render_login'))
-    
-    # render_template(
-    #     template_name_or_list = "login.html", 
-    #     login = True,
-    # )
+

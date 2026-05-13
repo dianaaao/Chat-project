@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style = "display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+                justify-content: center;
+                gap: 15px;
+                /* text-align: start; */
+
+                /* width: 1035px;
+                height: 650px; */
+                padding-left: 30vw;
+                padding-right: 30vw;
+
+                border: 1px solid #999999;
+                border-radius: 20px;
+                margin: 0 auto;">
+
+        <h1 style = "margin: 0; font-size: 32px; position: relative; left: 0;">Вас вітає команда World IT !</h1>
+        <p style = "font-size: 16px;">Щоб завершити реєстрацію та переконатися, що саме ви є <br> власником цієї електронної адреси, будь ласка, підтвердіть свою <br> пошту.</p>
+        
+        <button style = "display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        margin-top: 15px;
+                        height: 36px;
+                        border: none;
+                        border-radius: 5px;
+                        background-color: black;
+                        color: white;
+                        width: 100%;">Підтвердити пошту</button>
+
+        <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="team"> 
+
+        <hr style = "width: 100%; border: 1px solid #999999; margin: 0;">
+
+        <p style = "font-size: 16px;">Якщо у вас виникнуть питання — ми завжди раді допомогти! <br> З найкращими побажаннями, команда World IT Academy</p>
+
+    </div>
+</body>
+</html>
