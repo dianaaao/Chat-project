@@ -11,3 +11,5 @@ class User(DATABASE.Model, flask_login.UserMixin):
     avatar_path = DATABASE.Column(DATABASE.String(255))
     gender = DATABASE.Column(DATABASE.String(255))
     birth_date = DATABASE.Column(DATABASE.String(255))
+
+    is_verified = DATABASE.Column(DATABASE.Boolean, default = False)

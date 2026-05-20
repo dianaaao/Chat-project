@@ -2,6 +2,7 @@ import flask, werkzeug.security as security, flask_login
 from .apps import *
 from .models import User
 from app.db import DATABASE
+from config import send_verification_email
 
 
 
@@ -34,12 +35,30 @@ def render_registration():
                 # last_name="User",   
                 email = email,
                 password_hash = pass_hash,
+                is_verified = False,
             )
             DATABASE.session.add(user)
             DATABASE.session.commit()
-            return flask.redirect("/main_page")
+
+            verifyurl = f"{flask.request.host_url}check_email?user_id={user.id}" # зібрали посилання
+            send_verification_email(to_email = email, verify_url = verifyurl) # відправили листа з посиланням для підтвердження
+            # return flask.redirect("/main_page")
         
     return flask.render_template("registration.html", registration = True)
+
+
+@registration.route("/check_email")
+def check_email():
+    user_id = flask.request.args.get("user_id")
+    if user_id:
+        user = User.query.filter_by(id = user_id).scalar()
+        if user:
+            user.is_verified = True
+            DATABASE.session.commit()
+            return flask.redirect("/login")
+    
+    return flask.render_template("registration.html", registration = True)
+
 
 @main_page.route("/main_page", methods = ["GET", "POST"])
 @flask_login.login_required # для безпеки, щоб не можна було зайти на головну сторінку без авторизації

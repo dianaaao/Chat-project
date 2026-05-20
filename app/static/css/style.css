@@ -1,29 +1,33 @@
-body{
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    height: 100vh;
-    background-color: #ffffff;
-    margin-top: 3vh;
-
-    overflow: hidden;
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    /* overflow: hidden; */
 }
 
-main{
+.header-content{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 20px;
-
-    width: 35vw;
+}
+.main-block{
+    width: 100%;
+}
+.footer-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .header{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+
+    margin-top: 3vh;
     
 }
 .log-in{

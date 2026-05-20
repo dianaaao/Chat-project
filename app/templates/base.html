@@ -7,38 +7,57 @@
     {% block links %}{% endblock %}
 </head>
 <body>
-    <header>
-        {% if registration %}
-            <div class="header">
-                <img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="">
-                <button class="log-in" type="button"><a href="login">Увійти</a></button>
-            </div>
-        {% elif login and not current_user.is_authenticated %}
-            <div class="header">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
-                <button class="register" type="button"><a href="/">Створити обліковий запис</a></button>
-            </div>
-        {% elif current_user.is_authenticated %}
-            <div class="header">
-                <button class="register" type="button"><a href="{{ url_for('main_page.logout') }}">Вихід</a></button>
-            </div>
-        {% endif %}
-    </header>
-    
-    <main>
-        {% block content %}{% endblock %}
-    </main>
 
-    <footer>
-        {% if registration %}
-            <div class="footer">
-                <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
-            </div>
-        {% elif login %}
-            <div class="footer">
-                <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
-            </div>
+    <!-- <div class="body"> -->
+        {% if not main_page %}
+            <header>
+                <div class="header-content">
+                    {% if registration %}
+                        <div class="header">
+                            <img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="">
+                            <button class="log-in" type="button"><a href="login">Увійти</a></button>
+                        </div>
+                    {% elif login and not current_user.is_authenticated %}
+                        <div class="header">
+                            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
+                            <button class="register" type="button"><a href="/">Створити обліковий запис</a></button>
+                        </div>
+                    {% elif current_user.is_authenticated %}
+                        <div class="header">
+                            <button class="register" type="button"><a href="{{ url_for('main_page.logout') }}">Вихід</a></button>
+                        </div>
+                    {% endif %}
+                </div>
+            </header>
         {% endif %}
-    </footer>
+        
+        
+        <main>
+            <div class="main-block">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        
+
+        {% if not main_page %}
+            <footer>
+                <div class="footer-content">
+                {% block footer %}{% endblock %}
+                    {% if registration %}
+                        <div class="footer">
+                            <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
+                        </div>
+                    {% elif login %}
+                        <div class="footer">
+                            <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
+                        </div>
+                    {% endif %} 
+                </div>
+            </footer>
+        {% endif %}
+    <!-- </div> -->
+
+    {% block scripts %}{% endblock %}
+
 </body>
 </html>

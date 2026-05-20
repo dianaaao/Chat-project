@@ -1,10 +1,42 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('registration.static', filename = 'css/registration.css') }}">
+<link rel="stylesheet" href="{{ url_for('main_page.static', filename = 'css/main_page.css') }}">
 {% endblock %}
 
+<!-- {% block header %}
+        
+{% endblock %} -->
+
 {% block content %}
-    <h1>home</h1>
+    <!-- <h1></h1> - заголовок (1-6)
+    <p></p> - просто текст (параграф)
+    <span></span> - тоже текст, но для редакции
+    <a href="ссылка"></a> - тег для ссылок
+    <button></button> - кнопка
+    <input type="text"> - поле ввода
+    <img src="" alt=""> - картинка
+    <div></div> - контейнер для контента
     
+    каждому тегу можно задать class(можно задать одинаковый для нескольких елементов) или id(один айдиш для одного елемента) -->
+
+
+    <div class="main-container">
+        <div class="header-content">
+            <p>hi</p>
+        </div>
+        <div class="main-content">
+            <div class="your-chats">
+                    
+            </div>
+
+            <div class="general-chat">
+
+            </div>
+
+            <div class="users">
+
+            </div>
+        </div>
+    </div>    
 {% endblock %}
