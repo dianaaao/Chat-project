@@ -9,6 +9,8 @@
 .form-input {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     width: 40%;
     border-radius: 4px;
@@ -20,16 +22,16 @@
     border-radius: 4px;
 }
 .form-input p{
-    font-size: 14px;
-    color: rgba(113, 113, 122, 1);
-
+    font-size: 1rem;
+    font-weight: 400;
+    color: #0F172A;
+    text-align: center;
 }
 
-.policy{
+.text{
     display: flex;
     align-items: center;
-    color: rgba(179, 179, 197, 1);
-
+    justify-content: center;
 }
 
 .send-button{
@@ -37,8 +39,11 @@
     align-items: center;
     justify-content: center;
 
+    
     margin-top: 15px;
+    margin-bottom: 35px;
     height: 4vh;
+    width: 23vw;
     border: none;
     border-radius: 5px;
     background-color: black;

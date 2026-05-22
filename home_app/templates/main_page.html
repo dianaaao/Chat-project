@@ -23,7 +23,87 @@
 
     <div class="main-container">
         <div class="header-content">
-            <p>hi</p>
+            <div class="user_set_head1">
+                <img src="{{ url_for('main_page.static', filename = 'images/Vector.png') }}" alt="">
+                <p>Chat</p>
+            </div>
+                
+            <div class="user_set_head2">
+                <img src="{{ url_for('main_page.static', filename = 'images/Icon.png') }}" alt="">
+                <button class="settings" id="openModal"><img src="{{ url_for('main_page.static', filename = 'images/settings.png') }}" alt=""></button>
+                
+                <div class="modal-overlay" id="modal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <p>Налаштування</p>
+                            <button class="close-btn" id="closeModal"><img src="{{ url_for('main_page.static', filename = 'images/cross-1.png') }}" alt=""></button>
+                        </div>
+                        <hr>
+                        <div class="modal-body">
+                            <p>Зображення профілю</p>
+                            <div class="img-body">
+                                <div class="acc_img1">
+                                    <p>AA</p>
+                                </div>
+                                <div class="img-btns">
+                                    <button class="btn">
+                                        <img src="{{ url_for('main_page.static', filename = 'images/repeat-2.svg') }}" alt="">
+                                        <p>Замінити</p>
+                                    </button>
+                                    <button class="btn">
+                                        <img src="{{ url_for('main_page.static', filename = 'images/trash.svg') }}" alt="">
+                                        <p>Видалити</p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="content-part">
+                            <div class="name-group">
+                                <p>Ім’я</p>
+                                <input type="text" placeholder="Введіть ім'я">
+                            </div>
+
+                            <div class="secname-group">
+                                <p>Прізвище</p>
+                                <input type="text" placeholder="Введіть прізвище">
+                            </div>
+
+                            <div class="username-group">
+                                <p>Ім’я користувача</p>
+                                <input type="text" placeholder="Введіть ім'я користувача">
+                            </div>
+
+                            <div class="gender-group">
+                                <p>Стать</p>
+                                <select class="custom-select">
+                                    <option>Жіноча</option>
+                                    <option>Чоловіча</option>
+                                </select>
+                            </div>
+
+                            <div class="year-group">
+                                <p>Вік</p>
+                                <input type="date" placeholder="Оберіть вік">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="del-acc">
+                            <img src="{{ url_for('main_page.static', filename = 'images/trash.svg') }}" alt="">
+                            <a href="{{ url_for('main_page.logout') }}">Видалити аккаунт</a>
+                        </div>
+                        <hr>
+                        <div class="img-btns2">
+                            <button class="btn2"><p>Скасувати</p></button>
+                            <button class="btn3"><p>Зберегти</p></button>
+                        </div>
+                    </div>
+                </div>    
+                
+                <div class="acc_img2">
+                    <p>AA</p>
+                </div>
+            </div>  
         </div>
         <div class="main-content">
             <div class="your-chats">
@@ -39,4 +119,9 @@
             </div>
         </div>
     </div>    
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('main_page.static', filename = 'js/openModal.js') }}"></script>
+
 {% endblock %}

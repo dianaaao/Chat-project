@@ -42,7 +42,7 @@ def render_registration():
 
             verifyurl = f"{flask.request.host_url}check_email?user_id={user.id}" # зібрали посилання
             send_verification_email(to_email = email, verify_url = verifyurl) # відправили листа з посиланням для підтвердження
-            # return flask.redirect("/main_page")
+            return flask.redirect("/success_page")
         
     return flask.render_template("registration.html", registration = True)
 
@@ -55,7 +55,7 @@ def check_email():
         if user:
             user.is_verified = True
             DATABASE.session.commit()
-            return flask.redirect("/login")
+            return flask.redirect("/main_page")
     
     return flask.render_template("registration.html", registration = True)
 
@@ -81,6 +81,10 @@ def render_login():
                 return flask.redirect("/main_page")
 
     return flask.render_template("login.html", login = True)
+
+@success_page.route("/success_page")
+def render_success_page():
+    return flask.render_template("success_page.html", success_page = True)
 
 @main_page.route("/logout")
 def logout():

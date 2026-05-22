@@ -16,6 +16,12 @@ login.add_url_rule(
     login = True
 )
 
+success_page.add_url_rule(
+    rule = "/success_page",
+    view_func = render_success_page,
+    success_page = True,
+)
+
 main_page.add_url_rule(
     rule = "/main_page",
     view_func = render_home,

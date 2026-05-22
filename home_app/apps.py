@@ -18,6 +18,14 @@ login = flask.Blueprint(
     static_url_path = '/login/static',
 )
 
+success_page = flask.Blueprint(
+    name = 'success',
+    import_name = __name__,
+    static_folder = 'static',
+    template_folder = 'templates',
+    static_url_path = '/success/static',
+)
+
 main_page = flask.Blueprint(
     name = "main_page",
     import_name = __name__,

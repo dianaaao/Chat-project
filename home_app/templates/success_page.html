@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('success.static', filename = 'css/success.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Успіх</h1>
+        <div class="form-input">
+            <div class="text">
+                <p>Ми надіслали вам електронний лист з магічним посиланням <br> для підтвердження вашого облікового запису. <br> Будь ласка, перевірте свою поштову скриньку та натисніть на <br> посилання.</p>
+            </div>
+        
+            <button class="send-button" type="submit">Відкрити електронну пошту</button>
+        </div>
+        
+    </div>
+{% endblock %}

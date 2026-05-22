@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     {% block links %}{% endblock %}
 </head>
 <body>
@@ -12,7 +13,7 @@
         {% if not main_page %}
             <header>
                 <div class="header-content">
-                    {% if registration %}
+                    {% if registration or success_page %}
                         <div class="header">
                             <img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="">
                             <button class="log-in" type="button"><a href="login">Увійти</a></button>
@@ -43,7 +44,7 @@
             <footer>
                 <div class="footer-content">
                 {% block footer %}{% endblock %}
-                    {% if registration %}
+                    {% if registration or success_page %}
                         <div class="footer">
                             <img src="{{ url_for('static', filename = 'images/image.svg') }}" alt="">
                         </div>
