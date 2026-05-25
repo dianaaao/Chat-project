@@ -9,6 +9,7 @@ class User(DATABASE.Model, flask_login.UserMixin):
     email = DATABASE.Column(DATABASE.String(255), nullable = False, unique = True)
     password_hash = DATABASE.Column(DATABASE.String(255))
     avatar_path = DATABASE.Column(DATABASE.String(255))
+    username = DATABASE.Column(DATABASE.String(255), unique = True)
     gender = DATABASE.Column(DATABASE.String(255))
     birth_date = DATABASE.Column(DATABASE.String(255))
 

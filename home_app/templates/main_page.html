@@ -58,45 +58,47 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="content-part">
-                            <div class="name-group">
-                                <p>Ім’я</p>
-                                <input type="text" placeholder="Введіть ім'я">
-                            </div>
+                        <form action="{{ url_for('main_page.save_settings') }}" method="POST">
+                            <div class="content-part">
+                                <div class="name-group">
+                                    <p>Ім’я</p>
+                                    <input type="text" name="first_name" placeholder="Введіть ім'я">
+                                </div>
 
-                            <div class="secname-group">
-                                <p>Прізвище</p>
-                                <input type="text" placeholder="Введіть прізвище">
-                            </div>
+                                <div class="secname-group">
+                                    <p>Прізвище</p>
+                                    <input type="text" name="last_name" placeholder="Введіть прізвище">
+                                </div>
 
-                            <div class="username-group">
-                                <p>Ім’я користувача</p>
-                                <input type="text" placeholder="Введіть ім'я користувача">
-                            </div>
+                                <div class="username-group">
+                                    <p>Ім’я користувача</p>
+                                    <input type="text" name="username" placeholder="Введіть ім'я користувача">
+                                </div>
 
-                            <div class="gender-group">
-                                <p>Стать</p>
-                                <select class="custom-select">
-                                    <option>Жіноча</option>
-                                    <option>Чоловіча</option>
-                                </select>
-                            </div>
+                                <div class="gender-group">
+                                    <p>Стать</p>
+                                    <select class="custom-select" name="gender">
+                                        <option value="female">Жіноча</option>
+                                        <option value="male">Чоловіча</option>
+                                    </select>
+                                </div>
 
-                            <div class="year-group">
-                                <p>Вік</p>
-                                <input type="date" placeholder="Оберіть вік">
+                                <div class="year-group">
+                                    <p>Вік</p>
+                                    <input type="date" name="birth_date" placeholder="Оберіть вік">
+                                </div>
                             </div>
-                        </div>
-                        <hr>
-                        <div class="del-acc">
-                            <img src="{{ url_for('main_page.static', filename = 'images/trash.svg') }}" alt="">
-                            <a href="{{ url_for('main_page.logout') }}">Видалити аккаунт</a>
-                        </div>
-                        <hr>
-                        <div class="img-btns2">
-                            <button class="btn2"><p>Скасувати</p></button>
-                            <button class="btn3"><p>Зберегти</p></button>
-                        </div>
+                            <hr>
+                            <div class="del-acc">
+                                <img src="{{ url_for('main_page.static', filename = 'images/trash.svg') }}" alt="">
+                                <a href="{{ url_for('main_page.logout') }}">Видалити аккаунт</a>
+                            </div>
+                            <hr>
+                            <div class="img-btns2">
+                                <button class="btn2"><p>Скасувати</p></button>
+                                <button class="btn3"><p>Зберегти</p></button>
+                            </div>
+                        </form>
                     </div>
                 </div>    
                 

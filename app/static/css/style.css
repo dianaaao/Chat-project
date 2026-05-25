@@ -33,10 +33,10 @@ body {
 }
 .log-in{
     position: absolute;
-    right: 40px;
+    right: 2.6vw;
 
-    width: 76px;
-    height: 36px;
+    width: 5vw;
+    height: 4vh;
 
     border: 1px solid rgba(228, 228, 231, 1);
     border-radius: 6px;
@@ -50,10 +50,10 @@ body {
 
 .register{
     position: absolute;
-    right: 40px;
+    right: 2.6vw;
 
     width: auto;
-    height: 36px;
+    height: 4vh;
 
     border: 1px solid rgba(228, 228, 231, 1);
     border-radius: 6px;

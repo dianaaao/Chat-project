@@ -14,13 +14,13 @@
     border-radius: 4px;
 }
 .form-input input{
-    height: 36px;
+    height: 4vh;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 .form-input p{
-    font-size: 14px;
+    font-size: 0.875rem;
     color: rgba(113, 113, 122, 1);
 
 }

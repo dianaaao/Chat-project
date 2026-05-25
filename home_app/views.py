@@ -1,4 +1,4 @@
-import flask, werkzeug.security as security, flask_login
+import flask, werkzeug.security as security, flask_login, datetime
 from .apps import *
 from .models import User
 from app.db import DATABASE
@@ -64,6 +64,43 @@ def check_email():
 @flask_login.login_required # для безпеки, щоб не можна було зайти на головну сторінку без авторизації
 def render_home():
     return flask.render_template("main_page.html", main_page = True)
+
+@main_page.route("/save_settings", methods = ["POST"])
+@flask_login.login_required
+def save_settings():
+    first_name = flask.request.form.get("first_name", "").strip()
+    last_name = flask.request.form.get("last_name", "").strip()
+    username = flask.request.form.get("username", "").strip()
+    gender  = flask.request.form.get("gender", "").strip()
+    birth_date = flask.request.form.get("birth_date", "").strip()
+
+    if first_name and last_name and username and gender and birth_date:
+        unique_username = User.query.filter_by(username = username).scalar()
+        if unique_username and unique_username.id != flask_login.current_user.id:
+            return flask.redirect("/main_page")
+        
+        
+        
+        try:
+            birth = datetime.date.fromisoformat(birth_date)
+            if birth >= datetime.date.today():
+                return flask.redirect("/main_page")
+        except ValueError as error:
+            print(error)    
+
+        user = flask_login.current_user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.username = username
+        user.gender = gender
+        user.birth_date = birth_date
+        DATABASE.session.commit()
+    else:
+        return flask.redirect("/main_page")
+    
+    return flask.redirect("/main_page")
+        
+
 
 @login.route("/login", methods = ["GET", "POST"])
 def render_login():
