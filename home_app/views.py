@@ -1,6 +1,6 @@
 import flask, werkzeug.security as security, flask_login, datetime
 from .apps import *
-from .models import User
+from .models import User, Group, UserGroup
 from app.db import DATABASE
 from config import send_verification_email
 
@@ -79,8 +79,6 @@ def save_settings():
         if unique_username and unique_username.id != flask_login.current_user.id:
             return flask.redirect("/main_page")
         
-        
-        
         try:
             birth = datetime.date.fromisoformat(birth_date)
             if birth >= datetime.date.today():
@@ -122,6 +120,114 @@ def render_login():
 @success_page.route("/success_page")
 def render_success_page():
     return flask.render_template("success_page.html", success_page = True)
+
+# Маршрут доступний тільки через POST запит (fetch з JS)
+@main_page.route("/create_chat", methods = ["POST"])
+@flask_login.login_required  # якщо юзер не залогінений — редірект на логін
+def create_chat():
+    # Шукаємо в БД чи є вже група де owner_id = id поточного юзера
+    # .first() — повертає першу знайдену або None
+    existing = Group.query.filter_by(owner_id=flask_login.current_user.id).first()
+    if existing:
+        # Юзер вже має чат — повертаємо помилку з кодом 400 (Bad Request)
+        return flask.jsonify({"error": "already_exists"}), 400
+
+    # Беремо назву чату з JSON тіла запиту який прийшов з fetch
+    # "" — дефолтне значення якщо "name" не прийшло
+    # .strip() — прибираємо пробіли по краях
+    chat_name = flask.request.json.get("name", "").strip()
+    if not chat_name:
+        # Назва порожня — повертаємо помилку
+        return flask.jsonify({"error": "empty_name"}), 400
+    
+    # Створюємо новий об'єкт Group (але ще не зберігаємо в БД)
+    new_group = Group(group_name = chat_name, owner_id = flask_login.current_user.id)
+    DATABASE.session.add(new_group)   # додаємо в сесію
+    DATABASE.session.commit()         # зберігаємо в БД, після цього new_group.id вже існує
+
+    # Створюємо запис що поточний юзер є учасником свого ж чату
+    user_group = UserGroup(user_id = flask_login.current_user.id, group_id = new_group.id)
+    DATABASE.session.add(user_group)
+    DATABASE.session.commit()         # зберігаємо в БД
+    
+    # Повертаємо дані нового чату — JS отримає { id: 1, name: "..." }
+    # 201 — Created (стандартний код для успішного створення)
+    return flask.jsonify({"id": new_group.id, "name": new_group.group_name}), 201
+
+
+@main_page.route("/delete_chat", methods=["DELETE"])
+@flask_login.login_required
+def delete_chat():
+    # Шукаємо чат поточного юзера по owner_id
+    group = Group.query.filter_by(owner_id=flask_login.current_user.id).first()
+    if not group:
+        # Чат не знайдено — 404 Not Found
+        return flask.jsonify({"error": "not_found"}), 404
+
+    # Спочатку видаляємо всіх учасників чату з таблиці UserGroup
+    # ВАЖЛИВО: робимо це ДО видалення групи, бо інакше буде помилка foreign key
+    UserGroup.query.filter_by(group_id=group.id).delete()
+    DATABASE.session.delete(group)  # видаляємо саму групу
+    DATABASE.session.commit()       # підтверджуємо всі зміни в БД
+
+    # Повертаємо підтвердження — JS отримає { ok: true }
+    return flask.jsonify({"ok": True}), 200
+
+
+@main_page.route("/my_chat", methods=["GET"])
+@flask_login.login_required
+def my_chat():
+    # Шукаємо чат де поточний юзер є власником
+    group = Group.query.filter_by(owner_id=flask_login.current_user.id).first()
+    if group:
+        # Чат знайдено — повертаємо його дані
+        return flask.jsonify({"id": group.id, "name": group.group_name})
+    # Чату немає — повертаємо порожній об'єкт
+    # JS перевірить: if (data.id) — і нічого не покаже
+    return flask.jsonify({}), 200
+
+
+@main_page.route("/search_chats", methods=["GET"])
+@flask_login.login_required
+def search_chats():
+    # Беремо параметр q з URL: /search_chats?q=текст
+    query = flask.request.args.get("q", "").strip()
+    if not query:
+        # Порожній запит — повертаємо порожній масив
+        return flask.jsonify([])
+
+    # ilike — пошук без урахування регістру
+    # f"%{query}%" — % означає "будь-які символи до і після"
+    # наприклад query="ча" знайде "Мій чат", "чат друзів" і т.д.
+    results = Group.query.filter(Group.group_name.ilike(f"%{query}%")).all()
+    
+    # Перетворюємо список об'єктів Group в список словників для JSON
+    # JS отримає: [{ id: 1, name: "..." }, { id: 2, name: "..." }]
+    return flask.jsonify([{"id": g.id, "name": g.group_name} for g in results])
+
+
+# <int:chat_id> — Flask автоматично бере id з URL і передає в функцію як int
+# наприклад /join_chat/5 → chat_id = 5
+@main_page.route("/join_chat/<int:chat_id>", methods=["POST"])
+@flask_login.login_required
+def join_chat(chat_id):
+    # Шукаємо чат по id
+    group = Group.query.get(chat_id)
+    if not group:
+        return flask.jsonify({"error": "not_found"}), 404
+
+    # Перевіряємо чи юзер вже є учасником цього чату
+    already = UserGroup.query.filter_by(user_id=flask_login.current_user.id, group_id=chat_id).first()
+    if already:
+        # Вже учасник — повертаємо ok але з флагом already_member
+        return flask.jsonify({"ok": True, "already_member": True})
+
+    # Юзер ще не в чаті — створюємо запис в UserGroup
+    member = UserGroup(user_id=flask_login.current_user.id, group_id=chat_id)
+    DATABASE.session.add(member)
+    DATABASE.session.commit()
+
+    return flask.jsonify({"ok": True}), 200
 
 @main_page.route("/logout")
 def logout():
