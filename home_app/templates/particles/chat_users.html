@@ -1,0 +1,28 @@
+<div class="users_header">
+    <p>Користувачі</p>
+    <div class="users_counts">
+        <div class="count_users">
+            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+            <span>24 користувача</span> <!-- {{ users|length }} -->
+        </div>
+        <div class="count_users_online">
+            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+            <span>8 користувача онлайн</span> <!-- {{ online_users|length }} -->
+        </div>
+    </div>
+</div>
+
+<div class="users_list">
+    <div class="user_item">
+        <img src="/static/img/user1.png" alt="user1" />
+        <div class="user_info">
+            <p>Іван Іванов</p>
+        </div>
+    </div>
+    <div class="user_item">
+        <img src="/static/img/user2.png" alt="user2" />
+        <div class="user_info">
+            <p>Марія Петрова</p>
+        </div>
+    </div>
+    <!-- Додайте більше користувачів за потребою -->

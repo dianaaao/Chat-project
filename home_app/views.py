@@ -1,6 +1,6 @@
 import flask, werkzeug.security as security, flask_login, datetime
 from .apps import *
-from .models import User, Group, UserGroup
+from .models import User, Group, UserGroup, Message
 from app.db import DATABASE
 from config import send_verification_email
 
@@ -234,3 +234,18 @@ def logout():
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login.render_login'))
 
+@main_page.route('/chats/<int:chat_id>/')
+@flask_login.login_required
+def chat_page(chat_id):
+    chat = Group.query.get_or_404(chat_id)
+    messages = Message.query.filter_by(group_id=chat_id).order_by(Message.timestamp).all()
+    return flask.render_template('particles/chat_room.html', chat=chat, messages=messages)
+
+@main_page.route('/chats/<int:chat_id>/leave', methods=['POST'])
+@flask_login.login_required
+def leave_chat(chat_id):
+    member = UserGroup.query.filter_by(group_id=chat_id, user_id=flask_login.current_user.id).scalar()
+    if member:
+        DATABASE.session.delete(member)
+        DATABASE.session.commit()
+    return flask.redirect(flask.url_for('main_page.main'))

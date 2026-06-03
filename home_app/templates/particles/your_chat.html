@@ -1,0 +1,116 @@
+<div class="search-line">
+    <div class="line">
+        <img src="{{ url_for('main_page.static', filename = 'images/Icon-search.png') }}" class="input-icon" />
+        <input type="text" placeholder="Пошук чатів...">
+    </div>
+</div>  
+<div class="your-chat">
+    <div class="chat_and_delete" style="display: none;"> <!--  -->
+        <p class="section-label">Ваш чат</p>
+        <div class ="delete" id="delete-btn">
+            <img src="{{ url_for('main_page.static', filename = 'images/trash-2.png') }}"/>
+        </div>
+    </div>
+    <div class="chat-item" id="my-chat-item" style="display: none;">
+        <div class="avatar av-green" id="my-chat-avatar">G</div>
+        <div class="chat-info">
+            <div class="chat-row">
+                <span class="chat-name" id="my-chat-name">General Chat</span>
+                <div class="chat-meta">
+                    <span class="chat-time">зараз</span>
+                </div>
+            </div>
+            <p class="chat-preview">Ви щойно створили цей чат</p>
+        </div>
+    </div>
+    <hr id="my-chat-hr" style="display: none;">
+    <div class="div-create-chat" id="div-create-chat">
+        <button class="create-chat" onclick="openCreateModal()">
+            + Створити чат
+        </button>
+    </div>
+</div>
+
+    <!-- Модалка -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title">Створити чат</span>
+            <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <label class="modal-label">Назва чату</label>
+        <input class="modal-input" id="chatNameInput" type="text" placeholder="Введіть назву чату" />
+        <div class="modal-actions">
+            <button class="btn-cancel" id="btnCancel">Скасувати</button>
+            <button class="btn-create" id="btnCreate">Створити</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Модалка для видалення -->
+<div class="modal-overlay" id="deleteModalOverlay">
+    <div class="modal2">
+        <div class="modal-header">
+            <span class="modal-title">Видалити чат?</span>
+            <button class="modal-close" id="deleteModalClose">&times;</button>
+        </div>
+        <p>Ви впевнені, що хочете видалити цей чат?</p>
+        <p>У будь-який момент ви можете створити новий.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="deleteBtnCancel">Скасувати</button>
+            <button class="btn-create" id="deleteBtnConfirm">Видалити</button>
+        </div>
+    </div>
+</div>    
+
+<div class = "all-chats">
+    <div class="chat-item2">
+    <div class="avatar av-blue">D</div>
+    <div class="chat-info">
+        <div class="chat-row">
+        <span class="chat-name">Design Team</span>
+        <span class="chat-time">15m ago</span>
+        </div>
+        <p class="chat-preview">I just shared the new mockups in Figma</p>
+    </div>
+    </div>
+
+    <div class="chat-item2">
+        <div class="avatar av-red">D</div>
+        <div class="chat-info">
+            <div class="chat-row">
+            <span class="chat-name">Design Team</span>
+            <span class="chat-time">1h ago</span>
+            </div>
+            <p class="chat-preview">The API integration is complete ✓</p>
+        </div>
+    </div>
+
+    <div class="chat-item2">
+        <div class="avatar av-teal">M</div>
+        <div class="chat-info">
+            <div class="chat-row">
+            <span class="chat-name">Marketing Team</span>
+            <div class="chat-meta">
+                <span class="chat-time">1h ago</span>
+                <span class="badge">7</span>
+            </div>
+            </div>
+            <p class="chat-preview">Great work on the campaign launch!</p>
+        </div>
+    </div>
+
+    <div class="chat-item2">
+    <div class="avatar av-gray">R</div>
+    <div class="chat-info">
+        <div class="chat-row">
+        <span class="chat-name">Random</span>
+        <div class="chat-meta">
+            <span class="chat-time">5h ago</span>
+            <span class="badge">2</span>
+        </div>
+        </div>
+        <p class="chat-preview">Anyone up for lunch? 📌</p>
+    </div>
+    </div>
+</div>

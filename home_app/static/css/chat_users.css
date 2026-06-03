@@ -1,0 +1,26 @@
+.users_header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    padding: 0 2.8vh;
+
+    height: 7.6vh;
+    gap: 0.7vh;
+    border-bottom: 2px solid #E5E5E5;
+    flex-shrink: 0;
+}
+.users_header p{
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.users_counts{
+    display: flex;
+    gap: 1.6vw;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #999999;
+}
