@@ -14,3 +14,22 @@ class User(DATABASE.Model, flask_login.UserMixin):
     birth_date = DATABASE.Column(DATABASE.String(255))
 
     is_verified = DATABASE.Column(DATABASE.Boolean, default = False)
+    groups = DATABASE.relationship("Group", secondary = "user_group", back_populates = "users")
+    
+class UserGroup(DATABASE.Model):
+    id = DATABASE.Column(DATABASE.Integer, primary_key = True)
+    
+    user_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("user.id"))
+    group_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("group.id"))
+
+class Group(DATABASE.Model):
+    id = DATABASE.Column(DATABASE.Integer, primary_key = True)
+
+    group_name = DATABASE.Column(DATABASE.String(255))
+    owner_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("user.id"), nullable = True) 
+    
+    users = DATABASE.relationship("User", secondary = "user_group", back_populates = "groups")
+    
+    
+
+

@@ -1,6 +1,6 @@
 import flask, werkzeug.security as security, flask_login, datetime
 from .apps import *
-from .models import User
+from .models import User, Group, UserGroup
 from app.db import DATABASE
 from config import send_verification_email
 
@@ -122,6 +122,82 @@ def render_login():
 @success_page.route("/success_page")
 def render_success_page():
     return flask.render_template("success_page.html", success_page = True)
+
+@main_page.route("/create_chat", methods = ["POST"])
+@flask_login.login_required  # якщо юзер не залогінений — редірект на логін
+def create_chat():
+    owner_group = Group.query.filter_by(owner_id = flask_login.current_user.id).scalar()
+    if owner_group:
+        return flask.jsonify({"error": "already_exists"}), 400
+    
+    chat_name = flask.request.json.get("name", "").strip()
+    if not chat_name:
+        return flask.jsonify({"error": "empty_name"}), 400
+    
+    new_group = Group(group_name = chat_name, owner_id = flask_login.current_user.id)
+    DATABASE.session.add(new_group)
+    DATABASE.session.commit()
+    
+    user_group = UserGroup(
+        user_id = flask_login.current_user.id,
+        group_id = new_group.id
+    )
+    DATABASE.session.add(user_group)
+    DATABASE.session.commit()
+    
+
+    return flask.jsonify({"id": new_group.id, "name": new_group.group_name}), 201
+
+@main_page.route("/delete_chat", methods=["DELETE"])
+@flask_login.login_required
+def delete_chat():
+    owner_group = Group.query.filter_by(owner_id = flask_login.current_user.id).scalar()
+    if not owner_group:
+        return flask.jsonify({"error": "already_exists"}), 400
+    
+    UserGroup.query.filter_by(group_id = owner_group.id).delete()
+    DATABASE.session.delete(owner_group)
+    DATABASE.session.commit()
+
+    return flask.jsonify({"ok": True}), 200
+
+@main_page.route("/my_chat", methods=["GET"])
+@flask_login.login_required
+def my_chat():
+    owner_group = Group.query.filter_by(owner_id = flask_login.current_user.id).scalar()
+    if owner_group:
+        return flask.jsonify({"id": owner_group.id, "name": owner_group.group_name})
+    
+    return flask.jsonify({"error": "no_chat_found"}), 404
+
+@main_page.route("/search_chats", methods=["GET"])
+@flask_login.login_required
+def search_chats():
+    query = flask.request.args.get("query", "").strip()
+    if not query:
+        return flask.jsonify([])
+
+    groups = Group.query.filter(Group.group_name.ilike(f"%{query}%")).all()
+    result = [{"id": group.id, "name": group.group_name} for group in groups]
+    return flask.jsonify(result)
+
+@main_page.route("/join_chat/<int:chat_id>", methods=["POST"])
+@flask_login.login_required
+def joing_chat(chat_id):
+    group = Group.query.get(chat_id)
+    if not group:
+        return flask.jsonify({"error": "not_found"}), 404
+    
+
+    already_in_group = UserGroup.query.filter_by(user_id = flask_login.current_user.id, group_id=chat_id).first()
+    if already_in_group:
+        return flask.jsonify({"ok": True, "already_member": True})
+    
+    member = UserGroup(user_id = flask_login.current_user.id, group_id=chat_id)
+    DATABASE.session.add(member)
+    DATABASE.session.commit()
+
+    return flask.jsonify({"ok": True}), 200
 
 @main_page.route("/logout")
 def logout():
