@@ -13,7 +13,7 @@
     padding: 0 2.8vh;
 
     height: 7.6vh;
-    border-bottom: 1px solid #E5E5E5;
+    border-bottom: 2px solid #E5E5E5;
     flex-shrink: 0;
 }
 
@@ -39,7 +39,55 @@
     opacity: 1;
 }
 
+.more-info-wrapper {
+    position: relative;
+}
+
+.mini-menu {
+    position: absolute;
+    top: 9.5vh;
+    right: 28vw;
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    padding: 8px;
+    z-index: 50;
+    min-width: 243px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.mini-menu-close {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+}
+
+.mini-menu-btn {
+    display: block;
+    margin-top: 3.8vh;
+    width: 100%;
+    padding: 10px 16px;
+    background: #007AFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+}
+
+.mini-menu-btn:hover {
+    background: #0066dd;
+}
+
 .chat-messages {
+    justify-content: flex-end;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -163,7 +211,7 @@
     gap: 1.4vh;
     padding: 2.8vh;
     padding-top: 1.9vh;
-    border-top: 1px solid #E5E5E5;
+    border-top: 2px solid #E5E5E5;
     flex-shrink: 0;
     height: 8.8vh;
 }

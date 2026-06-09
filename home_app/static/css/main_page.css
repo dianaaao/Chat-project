@@ -64,7 +64,7 @@ main {
     cursor: pointer;
 }
 
-hr{
+.hr{
     border: 1px solid #007AFF26;
 }
 
@@ -285,11 +285,6 @@ hr{
     border: 1px solid #E5E5E5;
     /* background-color: rgb(49, 134, 209); */
 }
-hr{
-    margin: 0;
-    margin-bottom: 1vh;
-    border: 1px solid #E5E5E5;
-}
 
 .general-chat{
     display: flex;
@@ -301,6 +296,8 @@ hr{
     border: 1px solid #E5E5E5;
 }
 .users{
+    display: flex;
+    flex-direction: column;
     width: 26vw;
     height: 100%;
 /*     

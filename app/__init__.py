@@ -1,4 +1,4 @@
-from .settings import app
+from .settings import app, socketio
 from home_app.apps import *
 
 app.register_blueprint(blueprint = registration)

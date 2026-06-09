@@ -11,6 +11,14 @@
     padding: 3%;
     box-sizing: border-box;
 }
+
+
+#my-chat-hr{
+    margin: 0;
+    margin-bottom: 1vh;
+    border: 1px solid #E5E5E5;
+}
+
 .input-icon{
     width: 16px;
     height: 16px;

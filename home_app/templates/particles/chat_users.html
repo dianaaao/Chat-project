@@ -13,16 +13,42 @@
 </div>
 
 <div class="users_list">
-    <div class="user_item">
-        <img src="/static/img/user1.png" alt="user1" />
-        <div class="user_info">
-            <p>Іван Іванов</p>
+    <div class="user-item owner">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar">ІП</div>
+            <span class="user-status online"></span>
         </div>
+        <span class="user-name">Іван Петренко</span>
     </div>
-    <div class="user_item">
-        <img src="/static/img/user2.png" alt="user2" />
-        <div class="user_info">
-            <p>Марія Петрова</p>
+
+    <div class="user-item">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar" style="background: #e07a30;">K</div>
+            <span class="user-status online"></span>
         </div>
+        <span class="user-name">Kate</span>
     </div>
-    <!-- Додайте більше користувачів за потребою -->
+
+    <div class="user-item">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar" style="background: #3ba76a;">M</div>
+            <span class="user-status"></span>
+        </div>
+        <span class="user-name">Sarah</span>
+    </div>
+</div>
+
+<div class="info-user">
+    <img src="{{ url_for('main_page.static', filename='images/cross-1.png') }}" alt="" class="info-close" id="infoClose">
+    <div class="info-povod">
+        <div class="info-avatar av-blue">ІП</div>
+        <p class="info-name">Іван Петренко</p>
+        <p class="info-username">@ivan_petrenko</p>
+    </div>
+    <div class="info-names">
+        <p class="info-name-label">Дата народження</p>
+        <p class="info-value">15 квіт. 1995 (30 років)</p>
+        <p class="info-name-label">Стать</p>
+        <p class="info-value">Жінка</p>
+    </div>
+</div>

@@ -203,7 +203,10 @@ def search_chats():
     
     # Перетворюємо список об'єктів Group в список словників для JSON
     # JS отримає: [{ id: 1, name: "..." }, { id: 2, name: "..." }]
-    return flask.jsonify([{"id": g.id, "name": g.group_name} for g in results])
+    return flask.jsonify([{
+        "id": g.id, 
+        "name": g.group_name
+    } for g in results])
 
 
 # <int:chat_id> — Flask автоматично бере id з URL і передає в функцію як int
@@ -227,7 +230,9 @@ def join_chat(chat_id):
     DATABASE.session.add(member)
     DATABASE.session.commit()
 
-    return flask.jsonify({"ok": True}), 200
+    return flask.jsonify({
+        "ok": True
+    }), 200
 
 @main_page.route("/logout")
 def logout():
@@ -239,7 +244,52 @@ def logout():
 def chat_page(chat_id):
     chat = Group.query.get_or_404(chat_id)
     messages = Message.query.filter_by(group_id=chat_id).order_by(Message.timestamp).all()
-    return flask.render_template('particles/chat_room.html', chat=chat, messages=messages)
+    return flask.render_template(
+        'particles/chat_room.html', 
+        chat=chat, 
+        messages=messages
+    )
+
+# Маршрут для отримання списку всіх чатів з останніми повідомленнями
+# Викликається при завантаженні сторінки з result.js
+@main_page.route("/get_chats", methods=["GET"])
+@flask_login.login_required
+def get_chats():
+    # Отримуємо всі групи з БД
+    chats = Group.query.all()
+    result = []
+    for g in chats:
+        # Шукаємо останнє повідомлення цієї групи
+        # order_by(desc) — сортуємо від новіших до старіших, .first() — беремо перше (найновіше)
+        last_msg = Message.query.filter_by(group_id=g.id).order_by(Message.timestamp.desc()).first()
+        result.append({
+            "id": g.id,
+            "name": g.group_name,
+            # якщо повідомлення є — беремо текст, інакше порожній рядок
+            "last_message": last_msg.text if last_msg else "",
+            # якщо повідомлення є — беремо час у форматі ISO (наприклад "2024-01-15T14:30:00")
+            # JS функція timeAgo() перетворить це в "5m ago" і т.д.
+            "last_time": last_msg.timestamp.isoformat() if last_msg else ""
+        })
+    # Повертаємо список словників у форматі JSON
+    return flask.jsonify(result)
+
+
+# Маршрут для отримання всіх повідомлень конкретного чату
+# Викликається коли юзер клікає на чат — fetch(`/get_messages/${groupId}`) в chat.js
+@main_page.route("/get_messages/<int:group_id>", methods=["GET"])
+@flask_login.login_required
+def get_messages(group_id):
+    # Отримуємо всі повідомлення групи, відсортовані від старіших до новіших
+    messages = Message.query.filter_by(group_id=group_id).order_by(Message.timestamp).all()
+    return flask.jsonify([{
+        "text": m.text,
+        # якщо username заповнений — показуємо його, інакше показуємо email
+        "author": m.author.username or m.author.email,
+        "user_id": m.user_id,
+        # форматуємо час у вигляді 09:24 AM / 02:30 PM
+        "time": m.timestamp.strftime('%I:%M %p'),
+    } for m in messages])
 
 @main_page.route('/chats/<int:chat_id>/leave', methods=['POST'])
 @flask_login.login_required

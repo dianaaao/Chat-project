@@ -24,3 +24,171 @@
     font-weight: 400;
     color: #999999;
 }
+
+.users_list{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin-top: 1.2vh;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.owner{
+    background: #F0F8FF;
+}
+
+.user-item:hover {
+    background: #F0F8FF;
+}
+
+.user-avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+    background: #007AFF;
+}
+
+.user-status {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background: #888;
+}
+
+.user-status.online {
+    background: #007AFF;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+/* .info-user {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    height: 38.5vw;
+}
+
+.info-close {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px;
+    width: 16px;
+    height: 16px;
+} */
+
+.info-user {
+    position: relative;
+    background: #ffffff;
+    border-top: 2px solid #E5E5E5;
+    padding: 24px 20px;
+    width: 100%;
+    height: 38.5vh;
+    display: flex;
+    /* align-items: center; */
+    flex-direction: column;
+    gap: 2.4vh;
+}
+
+.info-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.info-close:hover {
+    opacity: 1;
+}
+
+.info-povod {
+    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.info-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #007AFF;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 3vh;
+    margin-top: 3vh;
+    position: relative;
+}
+
+.info-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    text-align: center;
+    margin: 0 0 1vh;
+}
+
+.info-username {
+    font-size: 0.875rem;
+    color: #007AFF;
+    text-align: center;
+    margin: 0;
+}
+
+.info-names {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vh;
+}
+
+.info-name-label {
+    font-size: 0.75rem;
+    color: #aaaaaa;
+    margin: 0 0 4px;
+}
+
+.info-value {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    font-weight: 500;
+    margin: 0 0 12px;
+}
+
+.info-value:last-child {
+    margin-bottom: 0;
+}

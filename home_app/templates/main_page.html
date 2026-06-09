@@ -37,7 +37,7 @@
                             <p>Налаштування</p>
                             <button class="close-btn" id="closeModal"><img src="{{ url_for('main_page.static', filename = 'images/cross-1.png') }}" alt=""></button>
                         </div>
-                        <hr>
+                        <hr class="hr">
                         <div class="modal-body">
                             <p>Зображення профілю</p>
                             <div class="img-body">
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                         </div>
-                        <hr>
+                        <hr class="hr">
                         <form action="{{ url_for('main_page.save_settings') }}" method="POST">
                             <div class="content-part">
                                 <div class="name-group">
@@ -87,12 +87,12 @@
                                     <input type="date" name="birth_date" placeholder="Оберіть вік">
                                 </div>
                             </div>
-                            <hr>
+                            <hr class="hr">
                             <div class="del-acc">
                                 <img src="{{ url_for('main_page.static', filename = 'images/trash.svg') }}" alt="">
                                 <a href="{{ url_for('main_page.logout') }}">Видалити аккаунт</a>
                             </div>
-                            <hr>
+                            <hr class="hr">
                             <div class="img-btns2">
                                 <button class="btn2"><p>Скасувати</p></button>
                                 <button class="btn3"><p>Зберегти</p></button>
@@ -123,7 +123,11 @@
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        const CURRENT_USER_ID = {{ current_user.id }};
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script src="{{ url_for('main_page.static', filename = 'js/result.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename='js/chat.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/openModal.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/openCreateModal.js') }}"></script>
@@ -131,6 +135,5 @@
     <script src="{{ url_for('main_page.static', filename = 'js/deleteChat.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/openDeleteModal.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/searchChat.js') }}"></script>
-    <script src="{{ url_for('main_page.static', filename = 'js/result.js') }}"></script>
 
 {% endblock %}
