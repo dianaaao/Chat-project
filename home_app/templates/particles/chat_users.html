@@ -1,0 +1,39 @@
+<div class="users_header">
+    <p>Користувачі</p>
+    <div class="users_counts">
+        <div class="count_users">
+            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+            <span>24 користувача</span> <!-- {{ users|length }} -->
+        </div>
+        <div class="count_users_online">
+            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+            <span>8 користувача онлайн</span> <!-- {{ online_users|length }} -->
+        </div>
+    </div>
+</div>
+
+<div class="users_list">
+    <div class="user-item owner">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar">ІП</div>
+            <span class="user-status online"></span>
+        </div>
+        <span class="user-name">Іван Петренко</span>
+    </div>
+
+    <div class="user-item">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar" style="background: #e07a30;">K</div>
+            <span class="user-status online"></span>
+        </div>
+        <span class="user-name">Kate</span>
+    </div>
+
+    <div class="user-item">
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar" style="background: #3ba76a;">M</div>
+            <span class="user-status"></span>
+        </div>
+        <span class="user-name">Sarah</span>
+    </div>
+</div>

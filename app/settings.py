@@ -1,4 +1,4 @@
-import flask, os
+import flask, os, flask_socketio
 
 
 app = flask.Flask(
@@ -8,3 +8,5 @@ app = flask.Flask(
     template_folder = 'templates',
     instance_path = os.path.abspath(os.path.join(__file__, '..', 'instance')),
 )
+
+socketio = flask_socketio.SocketIO(app = app)

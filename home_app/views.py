@@ -1,6 +1,6 @@
 import flask, werkzeug.security as security, flask_login, datetime
 from .apps import *
-from .models import User, Group, UserGroup
+from .models import User, Group, UserGroup, Message
 from app.db import DATABASE
 from config import send_verification_email
 
@@ -168,7 +168,7 @@ def my_chat():
     if owner_group:
         return flask.jsonify({"id": owner_group.id, "name": owner_group.group_name})
     
-    return flask.jsonify({"error": "no_chat_found"}), 404
+    return flask.jsonify({}), 200
 
 @main_page.route("/search_chats", methods=["GET"])
 @flask_login.login_required
@@ -204,3 +204,46 @@ def logout():
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login.render_login'))
 
+@main_page.route('/chats/<int:chat_id>/')
+@flask_login.login_required
+def chat_page(chat_id):
+    chat = Group.query.get_or_404(chat_id)
+    messages = Message.query.filter_by(group_id = chat_id).order_by(Message.time_stamp).all()
+    return flask.render_template('particles/chat_room.html', chat = chat, messages = messages)
+    
+@main_page.route('/get_chats', methods = ["GET"])
+@flask_login.login_required
+def get_chats():
+    chats = Group.query.all()
+    result = []
+    for elements in chats:
+        last_message = Message.query.filter_by(group_id = elements.id).order_by(Message.time_stamp.desc()).first()
+        result.append({
+            "id": elements.id,
+            "name": elements.group_name,
+            "last_message": last_message.text if last_message else "",
+            "last_time": last_message.time_stamp.isoformat() if last_message else "" 
+        })
+    return flask.jsonify(result)
+
+@main_page.route("/get_messages/<int:group_id>", methods=["GET"])
+@flask_login.login_required
+def get_messages(group_id):
+    messages = Message.query.filter_by(group_id = group_id).order_by(Message.time_stamp).all()
+    return flask.jsonify([{
+        "text": msg.text,
+        "author": msg.author.username or msg.author.email,
+        "user_id": msg.user_id,
+        "time": msg.time_stamp.strftime('%I:%M %p')
+    } for msg in messages])
+
+
+@main_page.route('/chats/<int:chat_id>/leave', methods=['POST'])
+@flask_login.login_required
+def leave_chat(chat_id):
+    member = UserGroup.query.filter_by(group_id = chat_id, user_id = flask_login.current_user.id)
+    if member:
+        DATABASE.session.delete(member)
+        DATABASE.session.commit()
+    return flask.redirect(flask.url_for('main_page.main'))
+    

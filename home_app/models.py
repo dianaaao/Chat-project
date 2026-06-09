@@ -1,5 +1,6 @@
 from app.db import DATABASE
 import flask_login
+from datetime import datetime, timezone
 
 class User(DATABASE.Model, flask_login.UserMixin):
     id = DATABASE.Column(DATABASE.Integer, primary_key = True)
@@ -30,6 +31,18 @@ class Group(DATABASE.Model):
     
     users = DATABASE.relationship("User", secondary = "user_group", back_populates = "groups")
     
-    
+class Message(DATABASE.Model):
+    id = DATABASE.Column(DATABASE.Integer, primary_key = True)
+
+    text = DATABASE.Column(DATABASE.Text, nullable = False)
+    time_stamp = DATABASE.Column(DATABASE.DateTime, default = datetime.now(timezone.utc))
+
+    user_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("user.id"))
+    group_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("group.id"))
+
+
+    author = DATABASE.relationship("User", backref="messages")
+
+
 
 

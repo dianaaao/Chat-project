@@ -1,46 +1,62 @@
-<div class="chat-header">
-    <span class = "chat-title">General Chat</span>
-    <div class = "chat-header-icons">
-        <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon"/>
-        <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon"/>
-    </div> 
-</div>
-
+<div class="chat-header" style="display: none;"">
+        <span class="chat-title"></span>
+        <div class="chat-header-icons">
+            <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
+            <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" id="moreInfoBtn" />
+        
+            <!-- міні-меню -->
+            <div class="mini-menu" id="miniMenu" style="display: none;">
+                <button class="mini-menu-close" id="leaveModalClose">&times;</button>
+                <button class="mini-menu-btn" id="leaveMenuBtn">Вийти</button>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="chat-header">
+        <span class="chat-title">General chat</span>
+        <div class="chat-header-icons">
+            <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
+            <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" />
+        </div>
+    </div>   -->
 
 <div class="chat-messages" id="chatMessages">
-    <div class="choose-chat">
-        <img src="{{ url_for('main_page.static', filename='images/Container.svg') }}" class="choose-chat-image">
-        <p class="choose-chat-text">Виберіть чат</p>
-        <p class="choose-chat-subtext">Приєднайтеся до кімнати та почніть розмову</p>
-    </div>
+    
+    {% if not messages %}
+        <div class="choose-chat">
+            <img src="{{ url_for('main_page.static', filename='images/Container.svg') }}" class="choose-chat-image">
+            <p class="choose-chat-text">Виберіть чат</p>
+            <p class="choose-chat-subtext">Приєднайтеся до кімнати та почніть розмову</p>
+        </div>
+    {% endif %}
 
     {% for msg in messages %}
         {% if msg.user_id == current_user.id %}
             <div class="message message-own">
-                <div class="avatar av-teal">{{ current_user.username[0].upper() }}</div>
+                <div class="avatar av-teal">{{ (current_user.username or current_user.email)[0].upper() }}</div>
                 <div class="message-body message-body-own">
                     <div class="message-top">
                         <span class="message-author">You</span>
-                        <span class="message-time">{{ msg.timestamp.strftime('%I:%M %p') }}</span>
+                        <span class="message-time">{{ msg.time_stamp.strftime('%I:%M %p') }}</span>
                     </div>
                     <p class="message-text">{{ msg.text }}</p>
                 </div>
             </div>
         {% else %}
             <div class="message">
-                <div class="avatar av-blue">{{ msg.author.username[0].upper() }}</div>
+                <div class="avatar av-blue">{{ (msg.author.username or msg.author.email)[0].upper() }}</div>
                 <div class="message-body">
                     <div class="message-top">
-                        <span class="message-author">{{ msg.author.username }}</span>
-                        <span class="message-time">{{ msg.timestamp.strftime('%I:%M %p') }}</span>
+                        <span class="message-author">{{ msg.author.username or msg.author.email }}</span>
+                        <span class="message-time">{{ msg.time_stamp.strftime('%I:%M %p') }}</span>
                     </div>
                     <p class="message-text">{{ msg.text }}</p>
                 </div>
             </div>
         {% endif %}
     {% endfor %}
+
     <!-- <div class="message">
-        <div class="avatar av-orange">K</div>
+        <div class="avatar av-blue">K</div>
         <div class="message-body">
             <div class="message-top">
                 <span class="message-author">Kate</span>
@@ -49,7 +65,6 @@
             <p class="message-text">I just shared the updated design files in Figma. The new color scheme looks amazing! What do you all think?</p>
         </div>
     </div>
-
     <div class="message message-own">
         <div class="avatar av-teal">Y</div>
         <div class="message-body message-body-own">
@@ -59,29 +74,56 @@
             </div>
             <p class="message-text">Looks great! I'll start working on the next step.</p>
         </div>
+    </div>
+    <div class="message message-own">
+        <div class="avatar av-teal">Y</div>
+        <div class="message-body message-body-own">
+            <div class="message-top">
+                <span class="message-author">You</span>
+                <span class="message-time">9:40 AM</span>
+            </div>
+            <p class="message-text">Looks great! I'll start working on the next step.</p>
+        </div>
+    </div>
+    <div class="message">
+        <div class="avatar av-blue">K</div>
+        <div class="message-body">
+            <div class="message-top">
+                <span class="message-author">Kate</span>
+                <span class="message-time">9:44 AM</span>
+            </div>
+            <p class="message-text">I just shared the updated design files in Figma. The new color scheme looks amazing! What do you all think?</p>
+        </div>
     </div> -->
 </div>
 
 
-<div class = "chat-input-area">
-    <img src="{{ url_for('main_page.static', filename='images/Icon-emoji.png') }}" class="emoji-icon">
-    <input type="text" class = "chat-input" placeholder = "Ведіть повідомленя...">
-    <button class = "send-btn">
+<div class="chat-input-area" style="display: none;">
+    <img src="{{ url_for('main_page.static', filename='images/Icon-emoji.png') }}" class="emoji-icon" />
+    <input type="text" class="chat-input" placeholder="Введіть повідомлення..." />
+    <button class="send-btn">
         <img src="{{ url_for('main_page.static', filename='images/Icon-send.png') }}" class="send-icon" />
     </button>
 </div>
+<!-- <div class="chat-input-area">
+    <img src="{{ url_for('main_page.static', filename='images/Icon-emoji.png') }}" class="emoji-icon" />
+    <input type="text" class="chat-input" placeholder="Введіть повідомлення..." />
+    <button class="send-btn">
+        <img src="{{ url_for('main_page.static', filename='images/Icon-send.png') }}" class="send-icon" />
+    </button>
+</div> -->
 
-
+<!-- Модалка виходу -->
 <div class="modal-overlay" id="leaveModalOverlay">
-    <div class = "modal2">
-        <div class="modal-header"> 
+    <div class="modal2">
+        <div class="modal-header">
             <span class="modal-title">Вийти з чату?</span>
             <button class="modal-close" id="leaveModalClose">&times;</button>
         </div>
-        <p>Ви впевнені, що хочете вийти з цього чату?</p> 
+        <p>Ви впевнені, що хочете вийти з цього чату?</p>
         <div class="modal-actions">
             <button class="btn-cancel" id="leaveBtnCancel">Скасувати</button>
             <button class="btn-create" id="leaveBtnConfirm">Вийти</button>
-        </div>    
+        </div>
     </div>
 </div>
