@@ -33,3 +33,5 @@ main_page = flask.Blueprint(
     template_folder = "templates",
     static_url_path = "/main_page/static",
 )
+
+online_users = {}

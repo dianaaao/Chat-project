@@ -3,12 +3,22 @@ from .apps import *
 from .models import User, Group, UserGroup, Message
 from app.db import DATABASE
 from config import send_verification_email
+from .sockets import online_users
 
 
 
 @registration.route("/", methods = ["GET", "POST"])
 def render_registration():
     if flask_login.current_user.is_authenticated:
+        # group = Group.query.get()
+        # member_data = {
+        #     "title": group.group_name,
+        #     "members": [],
+        # }
+        # users = group.users
+        # for user in users:
+        #     member_data["members"].append({"email": user.email})
+
         return flask.render_template("main_page.html", main_page = True)
     
     if flask.request.method == "POST":
@@ -163,7 +173,8 @@ def delete_chat():
     if not group:
         # Чат не знайдено — 404 Not Found
         return flask.jsonify({"error": "not_found"}), 404
-
+    # спочатку видаляємо повідомлення
+    Message.query.filter_by(group_id=group.id).delete()
     # Спочатку видаляємо всіх учасників чату з таблиці UserGroup
     # ВАЖЛИВО: робимо це ДО видалення групи, бо інакше буде помилка foreign key
     UserGroup.query.filter_by(group_id=group.id).delete()
@@ -299,3 +310,34 @@ def leave_chat(chat_id):
         DATABASE.session.delete(member)
         DATABASE.session.commit()
     return flask.redirect(flask.url_for('main_page.main'))
+
+# Маршрут для отримання списку учасників конкретного чату
+# Викликається з JS коли юзер відкриває чат — fetch(`/get_members/${groupId}`)
+@main_page.route("/get_members/<int:group_id>", methods=["GET"])
+@flask_login.login_required
+def get_members(group_id):
+    # знаходимо групу по id — якщо немає повертаємо 404
+    group = Group.query.get_or_404(group_id)
+
+    all_users = len(group.users)
+    
+
+    count_online_users = 0
+    for user in group.users:
+        if user.id in online_users:
+            count_online_users += 1
+
+    # повертаємо список учасників у форматі JSON
+    # для кожного юзера — name (username або email якщо username не заповнений)
+    result = []
+    for user in group.users:
+        result.append({
+            "id": user.id,
+            "name": user.username or user.email,
+            "email": user.email,
+            "is_owner": user.id == group.owner_id,
+            "is_online": user.id in online_users, # чи є в словнику
+            "all_users": all_users,
+            "count_online_user": count_online_users,
+        })
+    return flask.jsonify(result)

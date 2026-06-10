@@ -14,6 +14,34 @@ socket.on("disconnect", () => {
     console.log("Ви відключились")
 })
 
+// юзер підключився — ставимо зелену крапку
+socket.on("user_status_online", (data) => {
+    const status_dot = document.querySelector(`.user-item[data-user-id="${data.user_id}"] .user-status`)
+    if (status_dot) {
+        status_dot.classList.add("online")
+    
+        currentOnline++
+        updateUserCount()
+    }
+})
+
+// юзер відключився — прибираємо зелену крапку
+socket.on("user_status_offline", (data) => {
+    const status_dot = document.querySelector(`.user-item[data-user-id="${data.user_id}"] .user-status`)
+    if (status_dot) {
+        status_dot.classList.remove("online")
+
+        currentOnline--
+        updateUserCount()
+    } 
+})
+
+function updateUserCount() {
+    const all_users = document.querySelector(".count_users span").textContent = `${currentTotal}`
+    const online = document.querySelector(".count_users_online span").textContent = `${currentOnline} онлайн`
+}
+            
+
 // Відкриває чат по кліку на контейнер чату в сайдбарі
 function openChat(groupId, groupName) {
     // якщо раніше був відкритий інший чат — виходимо з його кімнати
@@ -52,6 +80,35 @@ function openChat(groupId, groupName) {
     newSendBtn.addEventListener('click', sendMessage)
     messageInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') sendMessage()  // відправка по Enter
+    })
+
+    
+    // завантажуємо список учасників чату
+    fetch(`/get_members/${groupId}`)
+        .then(res => res.json()) // парсимо JSON відповідь від сервера
+        .then(members => {
+            const res_list = document.querySelector(".users_list")
+            res_list.innerHTML = '' // очищаємо попередній список
+
+            currentTotal = members[0].all_users
+            currentOnline = members[0].count_online_user
+            updateUserCount()
+
+            // для кожного учасника створюємо елемент
+            members.forEach(member => {
+                // беремо перші літери кожного слова імені для аватара
+                // наприклад "Іван Петренко" → "ІП"
+                const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                res_list.innerHTML += `
+                    <div class="user-item ${member.is_owner ? 'owner' : ''}" data-user-id="${member.id}">
+                        <div class="user-avatar-wrapper">
+                            <div class="user-avatar">${initial}</div>
+                            <span class="user-status ${member.is_online ? 'online' : ''}"></span>
+                        </div>
+                        <span class="user-name">${member.name}</span>
+                    </div>
+                `
+            })
     })
 }
 

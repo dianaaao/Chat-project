@@ -1,15 +1,35 @@
 from app.settings import socketio
 from app.db import DATABASE
+from .apps import online_users
 from .models import Message, Group, UserGroup
-import flask_login, flask_socketio
+import flask, flask_login, flask_socketio
 
 @socketio.on("connect")
 def handle_connect():
     print("Клієнт підключився")
 
+    if flask_login.current_user.id not in online_users.keys():
+        online_users[flask_login.current_user.id] = set()
+
+    online_users[flask_login.current_user.id].add(flask.request.sid)
+
+    print("ONLINE:", flask_login.current_user.id)
+
+    socketio.emit("user_status_online", {"user_id": flask_login.current_user.id})
+
 @socketio.on("disconnect")
 def handle_disconnect():
     print("Клієнт відключився")
+
+    if flask_login.current_user.id in online_users.keys():
+        online_users[flask_login.current_user.id].discard(flask.request.sid) 
+
+        print("OFFLINE:", flask_login.current_user.id)
+
+        if not online_users[flask_login.current_user.id]:
+            del online_users[flask_login.current_user.id]
+           
+            socketio.emit("user_status_offline", {"user_id": flask_login.current_user.id})
 
 @socketio.on("join_room")
 def handle_join_room(data):
