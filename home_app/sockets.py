@@ -10,12 +10,13 @@ def handle_connect():
 
     if flask_login.current_user.id not in online_users.keys():
         online_users[flask_login.current_user.id] = set()
+        socketio.emit("user_status_online", {"user_id": flask_login.current_user.id})
+
 
     online_users[flask_login.current_user.id].add(flask.request.sid)
 
     print("ONLINE:", flask_login.current_user.id)
-
-    socketio.emit("user_status_online", {"user_id": flask_login.current_user.id})
+    
 
 @socketio.on("disconnect")
 def handle_disconnect():
@@ -96,3 +97,10 @@ def handle_send_message(data):
             },
             to=f'room_{group.id}'
         )
+
+
+
+        
+
+
+

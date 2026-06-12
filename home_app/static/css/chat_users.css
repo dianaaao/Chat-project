@@ -106,6 +106,9 @@
 } */
 
 .info-user {
+    display: none;
+}
+.info-user {
     position: relative;
     background: #ffffff;
     border-top: 2px solid #E5E5E5;

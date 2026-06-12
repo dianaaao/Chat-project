@@ -95,22 +95,95 @@ function openChat(groupId, groupName) {
             updateUserCount()
 
             // для кожного учасника створюємо елемент
+            // members.forEach(member => {
+            //     // беремо перші літери кожного слова імені для аватара
+            //     // наприклад "Іван Петренко" → "ІП"
+            //     const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+            //     res_list.innerHTML += `
+            //         <div class="user-item ${member.is_owner ? 'owner' : ''}" data-user-id="${member.id}">
+            //             <div class="user-avatar-wrapper">
+            //                 <div class="user-avatar">${initial}</div>
+            //                 <span class="user-status ${member.is_online ? 'online' : ''}"></span>
+            //             </div>
+            //             <span class="user-name">${member.name}</span>
+            //         </div>
+            //     `
+            // })
             members.forEach(member => {
                 // беремо перші літери кожного слова імені для аватара
                 // наприклад "Іван Петренко" → "ІП"
-                const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-                res_list.innerHTML += `
-                    <div class="user-item ${member.is_owner ? 'owner' : ''}" data-user-id="${member.id}">
-                        <div class="user-avatar-wrapper">
-                            <div class="user-avatar">${initial}</div>
-                            <span class="user-status ${member.is_online ? 'online' : ''}"></span>
-                        </div>
-                        <span class="user-name">${member.name}</span>
+                const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)    
+                const div = document.createElement('div')
+                div.className = `user-item ${member.is_owner ? 'owner' : ''}`
+                div.dataset.userId = member.id
+                div.onclick = () => openUserInfo(member.id)
+                div.innerHTML = `
+                    <div class="user-avatar-wrapper">
+                        <div class="user-avatar">${initial}</div>
+                        <span class="user-status ${member.is_online ? 'online' : ''}"></span>
                     </div>
+                    <span class="user-name">${member.name}</span>
                 `
+                res_list.appendChild(div)
             })
     })
 }
+
+function openUserInfo(userId) {
+    console.log('openUserInfo викликано', userId)
+    fetch(`/get_user/${userId}`)
+    .then(res => res.json()) // парсимо JSON відповідь від сервера
+        .then(user => {
+            console.log('user data:', user)
+            const initial = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+            document.querySelector('.info-avatar').textContent = initial
+            document.querySelector('.info-name').textContent = user.name
+            document.querySelector('.info-username').textContent = `@${user.email.split('@')[0]}`
+
+            const values = document.querySelectorAll('.info-value')
+            values[0].textContent = formatBirthDate(user.birth_date)
+            values[1].textContent = formatGender(user.gender)
+
+            document.querySelector('.info-user').style.display = "block"
+        })
+}
+
+// закрити по хрестику
+document.getElementById("infoClose").addEventListener("click", () => {
+    document.querySelector(".info-user").style.display = "none"
+
+})
+
+function formatBirthDate(dateStr) {
+    if (!dateStr) return 'Не вказано'
+    
+    const date = new Date(dateStr)
+    const today = new Date()
+    
+    // рахуємо вік
+    let age = today.getFullYear() - date.getFullYear()
+    const monthDiff = today.getMonth() - date.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
+        age--
+    }
+    
+    // форматуємо дату українською
+    const formatted = date.toLocaleDateString('uk-UA', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    })
+    
+    return `${formatted} (${age} років)`
+}
+
+function formatGender(gender) {
+    if (!gender) return 'Не вказано'
+    if (gender === 'male') return 'Чоловік'
+    if (gender === 'female') return 'Жінка'
+    return gender
+}
+
 
 // Спрацьовує коли сервер підтверджує підключення до кімнати
 socket.on("join_room", (data) => {

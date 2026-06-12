@@ -341,3 +341,14 @@ def get_members(group_id):
             "count_online_user": count_online_users,
         })
     return flask.jsonify(result)
+
+@main_page.route("/get_user/<int:user_id>", methods=["GET"])
+@flask_login.login_required
+def get_user(user_id):
+    user = User.query.get_or_404(user_id)
+    return flask.jsonify({
+        "name": user.username or user.email,
+        "email": user.email,
+        "birth_date": user.birth_date or "",
+        "gender": user.gender or "",
+    })
