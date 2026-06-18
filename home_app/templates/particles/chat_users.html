@@ -1,13 +1,18 @@
 <div class="users_header">
-    <p>Користувачі</p>
-    <div class="users_counts">
-        <div class="count_users">
-            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
-            <span>0 користувача</span> 
-        </div>
-        <div class="count_users_online">
-            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
-            <span>Усі оффлайн</span> 
+    <button class="btn-back" id="btn-back" style="display:none;">
+        <img src="{{ url_for('main_page.static', filename='images/Arrow-right.svg') }}" alt="back">
+    </button>
+    <div class="for-row">
+        <p>Користувачі</p>
+        <div class="users_counts">
+            <div class="count_users">
+                <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+                <span>0 користувача</span> 
+            </div>
+            <div class="count_users_online">
+                <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+                <span>Усі оффлайн</span> 
+            </div>
         </div>
     </div>
 </div>
@@ -38,6 +43,9 @@
     </div> -->
 </div>
 
+<div class="info-user-overlay" style="display: none;">
+
+</div>
 <div class="info-user">
     <img src="{{ url_for('main_page.static', filename='images/cross-1.png') }}" alt="" class="info-close" id="infoClose">
     <div class="info-povod">

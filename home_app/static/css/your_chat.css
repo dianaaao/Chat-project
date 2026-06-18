@@ -190,9 +190,14 @@
 
 .all-chats{
     display: flex;
+
     /* justify-content: center;
     align-items: center; */
     flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
     /* padding-right: 2.5vw; */
 }
 
@@ -305,4 +310,14 @@
 .btn-cancel:hover { 
     background: #00000020;
     color: black; 
+}
+
+
+
+@media (max-width: 480) {
+    .modal {
+        width: 90vw;
+        border-radius: 0;
+        border: 1px solid #E5E5E5;
+    } 
 }

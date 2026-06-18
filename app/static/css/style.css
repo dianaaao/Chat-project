@@ -71,3 +71,27 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
+
+
+
+
+@media (max-width: 480px) {
+    .header-content img{
+        height: 3.6vh;
+        width: 53.9vw;
+    }
+    /* .header-content button{
+        display: none;
+    } */
+    .log-in {
+        display: none;
+    }
+    .register {
+        display: none;
+    }
+    .footer img{
+        height: 38.9vh;
+        width: 97.5vw;
+    }
+}

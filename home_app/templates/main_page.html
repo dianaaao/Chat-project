@@ -29,10 +29,12 @@
                 
             <div class="user_set_head2">
                 <img src="{{ url_for('main_page.static', filename = 'images/Icon.png') }}" alt="">
-                <button class="settings" id="openModal"><img src="{{ url_for('main_page.static', filename = 'images/settings.png') }}" alt=""></button>
+                <button class="settings" id="openModal">
+                    <img src="{{ url_for('main_page.static', filename = 'images/settings.png') }}" alt="">
+                </button>
                 
                 <div class="modal-overlay" id="modal">
-                    <div class="modal">
+                    <div class="set-modal">
                         <div class="modal-header">
                             <p>Налаштування</p>
                             <button class="close-btn" id="closeModal"><img src="{{ url_for('main_page.static', filename = 'images/cross-1.png') }}" alt=""></button>
@@ -107,7 +109,7 @@
             </div>  
         </div>
         <div class="main-content">
-            <div class="your-chats">
+            <div class="your-chats tab-active">
                 {% include 'particles/your_chat.html' %}
             </div>
 
@@ -127,6 +129,7 @@
         const CURRENT_USER_ID = {{ current_user.id }};
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script src="{{ url_for('main_page.static', filename = 'js/tabs.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/result.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename='js/chat.js') }}"></script>
     <script src="{{ url_for('main_page.static', filename = 'js/openModal.js') }}"></script>

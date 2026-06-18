@@ -37,8 +37,13 @@ socket.on("user_status_offline", (data) => {
 })
 
 function updateUserCount() {
-    const all_users = document.querySelector(".count_users span").textContent = `${currentTotal}`
+    const all_users = document.querySelector(".count_users span").textContent = formatUsers(currentTotal)
     const online = document.querySelector(".count_users_online span").textContent = `${currentOnline} онлайн`
+}
+function formatUsers(count) {
+    if (count % 10 === 1 && count % 100 !== 11) return `${count} користувач`
+    if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) return `${count} користувача`
+    return `${count} користувачів`
 }
             
 
@@ -90,6 +95,8 @@ function openChat(groupId, groupName) {
             const res_list = document.querySelector(".users_list")
             res_list.innerHTML = '' // очищаємо попередній список
 
+            if (!members || members.length === 0) return
+
             currentTotal = members[0].all_users
             currentOnline = members[0].count_online_user
             updateUserCount()
@@ -126,7 +133,10 @@ function openChat(groupId, groupName) {
                 `
                 res_list.appendChild(div)
             })
-    })
+            if (window.innerWidth <= 480) {
+                switchToTab(1)
+            }
+        })
 }
 
 function openUserInfo(userId) {
@@ -144,7 +154,11 @@ function openUserInfo(userId) {
             values[0].textContent = formatBirthDate(user.birth_date)
             values[1].textContent = formatGender(user.gender)
 
-            document.querySelector('.info-user').style.display = "block"
+            document.querySelector('.info-user').style.display = "flex"
+
+            if (window.innerWidth <= 480) {
+                switchToTab(2)
+            }
         })
 }
 
