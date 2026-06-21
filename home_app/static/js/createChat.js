@@ -28,6 +28,7 @@ document.getElementById("btnCreate").addEventListener("click", async () => {
 
         // Показуємо блок власного чату в сайдбарі
         document.getElementById("my-chat-item").style.display = "flex"
+        document.getElementById("my-chat-item").dataset.groupId = data.id
         // Вписуємо назву чату
         document.getElementById("my-chat-name").textContent = data.name
         // Вписуємо першу літеру назви в аватар

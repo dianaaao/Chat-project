@@ -5,8 +5,10 @@ body {
 
     margin: 0;
     padding: 0;
-    height: auto;
-    overflow: hidden;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
 }
 
 main {
@@ -18,7 +20,7 @@ main {
 
 .main-container{
     width: 100%;
-    height: 100%;
+    height: 100dvh;
 }
 
 .header-content{
@@ -33,6 +35,9 @@ main {
 
     /* background-color: aqua; */
     border-bottom: 1px solid #E5E5E5;
+
+    padding-top: env(safe-area-inset-top);
+    height: calc(7vh + env(safe-area-inset-top));
 }
 
 .user_set_head1{
@@ -281,7 +286,7 @@ main {
     flex-direction: row;
 
     width: 100vw;
-    height: 93vh;
+    height:  calc(100dvh - 7vh - env(safe-area-inset-top));
 
     /* background-color: rgb(136, 255, 0); */
 }
@@ -315,6 +320,9 @@ main {
 /*     
     background-color: blueviolet; */
     border: 1px solid #E5E5E5;
+    
+
+    /* padding-top: env(safe-area-inset-top); */
 }
 
 

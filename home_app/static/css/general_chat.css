@@ -15,6 +15,8 @@
     height: 7.6vh;
     border-bottom: 2px solid #E5E5E5;
     flex-shrink: 0;
+
+    padding-top: env(safe-area-inset-top);
 }
 
 .chat-title {
@@ -216,9 +218,12 @@
     gap: 1.4vh;
     padding: 2.8vh;
     padding-top: 1.9vh;
+    padding-bottom: calc(2.8vh + env(safe-area-inset-bottom));
     border-top: 2px solid #E5E5E5;
     flex-shrink: 0;
-    height: 8.8vh;
+    /* height: 8.8vh; */
+
+    height: calc(8.8vh + env(safe-area-inset-bottom));
 }
 
 .emoji-icon {
@@ -238,7 +243,7 @@
     border: none;
     border-radius: 1vh;
     padding: 0 16px;
-    font-size: 0.875rem;
+    font-size: 1rem; /*0.875*/
     outline: none;
     color: #333333;
     background: #F5F5F5;
@@ -303,5 +308,12 @@
     }
     .delete{
         border-radius: 0.625rem;
+    }
+
+    .mini-menu {
+        right: 8vw;
+        
+        border: 1px solid #E5E5E5;
+        border-radius: 0;
     }
 }

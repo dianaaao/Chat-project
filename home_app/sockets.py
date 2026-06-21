@@ -49,6 +49,13 @@ def handle_join_room(data):
             },
             to=f'room_{group.id}'
         )
+        
+        # сповіщаємо всіх в кімнаті що список учасників оновився
+        flask_socketio.emit(
+            "members_updated",
+            {"groupId": group_id},
+            to=f'room_{group.id}'
+        )
 
 @socketio.on("leave_room")
 def handle_leave_room(data):

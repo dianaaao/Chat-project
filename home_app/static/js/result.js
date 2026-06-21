@@ -63,6 +63,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Якщо власний чат існує — показуємо його блок в сайдбарі
     if (data.id) {
         document.getElementById("my-chat-item").style.display = "flex"
+        document.getElementById("my-chat-item").dataset.groupId = data.id
         document.getElementById("my-chat-name").textContent = data.name
         document.querySelector(".chat_and_delete").style.display = "flex"
         document.getElementById("my-chat-hr").style.display = "block"

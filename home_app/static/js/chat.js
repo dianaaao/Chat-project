@@ -36,6 +36,35 @@ socket.on("user_status_offline", (data) => {
     } 
 })
 
+socket.on("members_updated", (data) => {
+    if (data.groupId === linkGroupId) {
+        loadMembers(linkGroupId)
+    }
+})
+
+socket.on("chat_deleted", (data) => {
+
+    console.log('CHAT DELETED:', data) 
+    // видаляємо чат зі списку всіх чатів
+    const chatItem = document.querySelector(`.chat-item2[data-group-id="${data.groupId}"]`)
+    console.log('found item:', chatItem)
+    if (chatItem) chatItem.remove()
+
+    // якщо видалений чат був відкритий — закриваємо його
+    if (linkGroupId === data.groupId) {
+        linkGroupId = null
+        document.querySelector('.chat-header').style.display = 'none'
+        document.querySelector('.chat-input-area').style.display = 'none'
+        document.querySelector('.chat-title').textContent = ''
+        document.getElementById('chatMessages').innerHTML = `
+            <div class="choose-chat">
+                <p class="choose-chat-text">Виберіть чат</p>
+                <p class="choose-chat-subtext">Приєднайтеся до кімнати та почніть розмову</p>
+            </div>
+        `
+    }
+})
+
 function updateUserCount() {
     const all_users = document.querySelector(".count_users span").textContent = formatUsers(currentTotal)
     const online = document.querySelector(".count_users_online span").textContent = `${currentOnline} онлайн`
@@ -89,11 +118,19 @@ function openChat(groupId, groupName) {
 
     
     // завантажуємо список учасників чату
+    loadMembers(groupId)
+
+    if (window.innerWidth <= 480) {
+        switchToTab(1)
+    }
+}
+
+function loadMembers(groupId) {
     fetch(`/get_members/${groupId}`)
-        .then(res => res.json()) // парсимо JSON відповідь від сервера
+        .then(res => res.json())
         .then(members => {
             const res_list = document.querySelector(".users_list")
-            res_list.innerHTML = '' // очищаємо попередній список
+            res_list.innerHTML = ''
 
             if (!members || members.length === 0) return
 
@@ -101,25 +138,8 @@ function openChat(groupId, groupName) {
             currentOnline = members[0].count_online_user
             updateUserCount()
 
-            // для кожного учасника створюємо елемент
-            // members.forEach(member => {
-            //     // беремо перші літери кожного слова імені для аватара
-            //     // наприклад "Іван Петренко" → "ІП"
-            //     const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-            //     res_list.innerHTML += `
-            //         <div class="user-item ${member.is_owner ? 'owner' : ''}" data-user-id="${member.id}">
-            //             <div class="user-avatar-wrapper">
-            //                 <div class="user-avatar">${initial}</div>
-            //                 <span class="user-status ${member.is_online ? 'online' : ''}"></span>
-            //             </div>
-            //             <span class="user-name">${member.name}</span>
-            //         </div>
-            //     `
-            // })
             members.forEach(member => {
-                // беремо перші літери кожного слова імені для аватара
-                // наприклад "Іван Петренко" → "ІП"
-                const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)    
+                const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
                 const div = document.createElement('div')
                 div.className = `user-item ${member.is_owner ? 'owner' : ''}`
                 div.dataset.userId = member.id
@@ -133,9 +153,6 @@ function openChat(groupId, groupName) {
                 `
                 res_list.appendChild(div)
             })
-            if (window.innerWidth <= 480) {
-                switchToTab(1)
-            }
         })
 }
 

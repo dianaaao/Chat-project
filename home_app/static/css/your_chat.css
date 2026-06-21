@@ -1,7 +1,7 @@
 .search-line{
     display: flex;
     justify-content: center;
-    /* align-items: center; */
+    align-items: center;
     position: relative;
 
     width: 100%;
@@ -10,6 +10,8 @@
     border-bottom: 2px solid #E5E5E5;
     padding: 3%;
     box-sizing: border-box;
+
+    padding-top: env(safe-area-inset-top);
 }
 
 
@@ -41,7 +43,7 @@
     
     background: transparent;
     outline: none;
-    font-size: 0.875rem;
+    font-size: 1rem; /*0.875*/
     color: #555;
     width: 100%;
     flex: 1;
@@ -202,7 +204,7 @@
 }
 
 /* Модалка */
-.modal-overlay {
+#modalOverlay, #deleteModalOverlay {
     display: none;
     position: fixed;
     inset: 0;
@@ -212,11 +214,11 @@
     justify-content: center;
 }
 
-.modal-overlay.open {
+#modalOverlay.open {
     display: flex;
 }
 
-.modal {
+.modal-create-chat{
     background: #fff;
     border-radius: 8px;
     padding: 1.5rem;
@@ -314,10 +316,22 @@
 
 
 
-@media (max-width: 480) {
-    .modal {
-        width: 90vw;
+@media (max-width: 480px) {
+    .modal-create-chat {
+        width: 90%;
         border-radius: 0;
         border: 1px solid #E5E5E5;
     } 
+
+    .modal2 {
+        display: flex;
+        flex-direction: column;
+        
+        width: 90%;
+        border-radius: 0;
+        border: 1px solid #E5E5E5;
+    }
+    #modalOverlay {
+        width: 100%;
+    }
 }

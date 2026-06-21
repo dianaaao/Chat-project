@@ -3,7 +3,7 @@ from .apps import *
 from .models import User, Group, UserGroup, Message
 from app.db import DATABASE
 from config import send_verification_email
-from .sockets import online_users
+from .sockets import online_users, socketio
 
 
 
@@ -173,6 +173,8 @@ def delete_chat():
     if not group:
         # Чат не знайдено — 404 Not Found
         return flask.jsonify({"error": "not_found"}), 404
+    
+    group_id = group.id  # зберігаємо id до видалення 
     # спочатку видаляємо повідомлення
     Message.query.filter_by(group_id=group.id).delete()
     # Спочатку видаляємо всіх учасників чату з таблиці UserGroup
@@ -180,6 +182,9 @@ def delete_chat():
     UserGroup.query.filter_by(group_id=group.id).delete()
     DATABASE.session.delete(group)  # видаляємо саму групу
     DATABASE.session.commit()       # підтверджуємо всі зміни в БД
+
+    # сповіщаємо всіх учасників кімнати що чат видалено
+    socketio.emit("chat_deleted", {"groupId": group_id}, to=f"room_{group_id}")
 
     # Повертаємо підтвердження — JS отримає { ok: true }
     return flask.jsonify({"ok": True}), 200
@@ -267,7 +272,13 @@ def chat_page(chat_id):
 @flask_login.login_required
 def get_chats():
     # Отримуємо всі групи з БД
-    chats = Group.query.all()
+    # chats = Group.query.all()
+
+    # беремо тільки чати де поточний юзер є учасником
+    user_groups = UserGroup.query.filter_by(user_id=flask_login.current_user.id).all()
+    group_ids = [ug.group_id for ug in user_groups]
+    chats = Group.query.filter(Group.id.in_(group_ids)).all()
+
     result = []
     for g in chats:
         # Шукаємо останнє повідомлення цієї групи
@@ -321,6 +332,12 @@ def get_members(group_id):
 
     all_users = len(group.users)
     
+    # автоматично додаємо поточного юзера як учасника, якщо його ще немає
+    # already = UserGroup.query.filter_by(user_id=flask_login.current_user.id, group_id=group_id).first()
+    # if not already:
+    #     new_member = UserGroup(user_id=flask_login.current_user.id, group_id=group_id)
+    #     DATABASE.session.add(new_member)
+    #     DATABASE.session.commit()
 
     count_online_users = 0
     for user in group.users:
