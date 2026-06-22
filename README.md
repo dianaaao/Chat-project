@@ -243,9 +243,12 @@ def handle_send_message(data):
     }, to=f'room_{data["groupId"]}')
 ```
  
- ![Main page](readme_imgs/main_page.jpg)
+![Main page](readme_imgs/main_page.jpg)
 
- <img src="readme_imgs/IMG_6049.gif" height="500">
+<p align="center">
+    <img src="readme_imgs/IMG_6049.gif" height="500">
+</p>
+
 <!-- ![Main page (mobile version)](readme_imgs/IMG_6049.gif) -->
  
 [Return to table of contents](#contents)
