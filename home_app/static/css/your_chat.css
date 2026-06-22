@@ -334,4 +334,8 @@
     #modalOverlay {
         width: 100%;
     }
+
+    .modal-input {
+        font-size: 1rem;
+    }
 }

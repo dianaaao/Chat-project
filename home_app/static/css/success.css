@@ -77,5 +77,8 @@
     }
     .send-button {
         width: 100%;
+        font-size: 1rem;
+        font-weight: 400;
+        height: 4.3vh;
     }
 }

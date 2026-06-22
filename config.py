@@ -22,42 +22,107 @@ def send_verification_email(to_email: str, verify_url: str):
 
         email_msg.set_content('Лист підтвердження від WorldIT')
 
+
         html = f"""
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Document</title>
+            <style>
+                @media only screen and (max-width: 600px) {{
+                    .email-container {{
+                        padding: 20px !important;
+                        border-radius: 0 !important;
+                        border: none !important;
+                    }}
+                    .email-title {{
+                        font-size: 24px !important;
+                    }}
+                    .email-text {{
+                        font-size: 14px !important;
+                    }}
+                }}
+            </style>
         </head>
-        <body>
-            <div style="max-width: 600px; margin: 0 auto; padding: 30px 300px; border: 1px solid #999; border-radius: 20px;">
-
-                <h1 style = "margin: 0; font-size: 32px; position: relative; left: 0;">Вас вітає команда World IT !</h1>
-                <p style = "font-size: 16px;">Щоб завершити реєстрацію та переконатися, що саме ви є <br> власником цієї електронної адреси, будь ласка, підтвердіть свою <br> пошту.</p>
-                
-                <a href="{verify_url}" style = "display: inline-block;
-                                text-align: center;
-
-                                margin-top: 15px;
-                                padding-top: 15px;
-
-                                height: 36px;
-                                border: none;
-                                border-radius: 5px;
-                                background-color: black;
-                                color: white;
-                                width: 100%;">Підтвердити пошту</a>
-
-                <img src="cid:image1" alt="team" style="display: block; margin: 0 auto; max-width: 100%;"> 
-
-                <hr style = "width: 100%; border: 1px solid #999999; margin: 0;">
-
-                <p style = "font-size: 16px;">Якщо у вас виникнуть питання — ми завжди раді допомогти! <br> З найкращими побажаннями, команда World IT Academy</p>
-
-            </div>
+        <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
+                <tr>
+                    <td align="center">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-container" style="max-width: 500px; margin: 0 auto; padding: 30px; border: 1px solid #999; border-radius: 20px; background-color: #ffffff;">
+                            <tr>
+                                <td>
+                                    <h1 class="email-title" style="margin: 0; font-size: 28px;">Вас вітає команда World IT!</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="email-text" style="font-size: 16px; line-height: 1.5;">Щоб завершити реєстрацію та переконатися, що саме ви є власником цієї електронної адреси, будь ласка, підтвердіть свою пошту.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="{verify_url}" style="display: block; text-align: center; margin-top: 15px; padding: 12px 0; border-radius: 5px; background-color: black; color: white; text-decoration: none; font-size: 16px;">Підтвердити пошту</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="cid:image1" alt="team" style="display: block; margin: 20px auto 0; max-width: 100%; height: auto;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <hr style="width: 100%; border: 1px solid #999999; margin: 20px 0;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="email-text" style="font-size: 16px; line-height: 1.5;">Якщо у вас виникнуть питання — ми завжди раді допомогти!<br>З найкращими побажаннями, команда World IT Academy</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </body>
         </html>
         """
+        # html = f"""
+        # <html lang="en">
+        # <head>
+        #     <meta charset="UTF-8">
+        #     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        #     <title>Document</title>
+        # </head>
+        # <body>
+        #     <div style="max-width: 600px; margin: 0 auto; padding: 30px 300px; border: 1px solid #999; border-radius: 20px;">
+
+        #         <h1 style = "margin: 0; font-size: 32px; position: relative; left: 0;">Вас вітає команда World IT !</h1>
+        #         <p style = "font-size: 16px;">Щоб завершити реєстрацію та переконатися, що саме ви є <br> власником цієї електронної адреси, будь ласка, підтвердіть свою <br> пошту.</p>
+                
+        #         <a href="{verify_url}" style = "display: inline-block;
+        #                         text-align: center;
+
+        #                         margin-top: 15px;
+        #                         padding-top: 15px;
+
+        #                         height: 36px;
+        #                         border: none;
+        #                         border-radius: 5px;
+        #                         background-color: black;
+        #                         color: white;
+        #                         width: 100%;">Підтвердити пошту</a>
+
+        #         <img src="cid:image1" alt="team" style="display: block; margin: 0 auto; max-width: 100%;"> 
+
+        #         <hr style = "width: 100%; border: 1px solid #999999; margin: 0;">
+
+        #         <p style = "font-size: 16px;">Якщо у вас виникнуть питання — ми завжди раді допомогти! <br> З найкращими побажаннями, команда World IT Academy</p>
+
+        #     </div>
+        # </body>
+        # </html>
+        # """
 
         email_msg.add_alternative(html, subtype = "html")
         with open("app/static/images/team.png", "rb") as file:

@@ -36,7 +36,7 @@ class Group(DATABASE.Model):
 class Message(DATABASE.Model):
     id = DATABASE.Column(DATABASE.Integer, primary_key=True)
     text = DATABASE.Column(DATABASE.Text, nullable=False)
-    timestamp = DATABASE.Column(DATABASE.DateTime, default=datetime.now(timezone.utc))
+    timestamp = DATABASE.Column(DATABASE.DateTime, default=lambda: datetime.now(timezone.utc))
 
     user_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("user.id"))
     group_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("group.id"))

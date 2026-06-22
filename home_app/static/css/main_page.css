@@ -35,9 +35,6 @@ main {
 
     /* background-color: aqua; */
     border-bottom: 1px solid #E5E5E5;
-
-    padding-top: env(safe-area-inset-top);
-    height: calc(7vh + env(safe-area-inset-top));
 }
 
 .user_set_head1{
@@ -326,6 +323,14 @@ main {
 }
 
 
+.system-message{
+    text-align:center;
+    margin:10px 0;
+    color:#888;
+    font-size:12px;
+}
+
+
 
 
 
@@ -356,6 +361,9 @@ main {
         width: 100%;
         padding: 12px 34px 12px 34px;
         box-sizing: border-box;
+        
+        /* padding-top: env(safe-area-inset-top); */
+        height: calc(7vh + env(safe-area-inset-top));
     }
             
     .user_set_head1 {
@@ -423,6 +431,15 @@ main {
     } 
     form {
         margin: 0;
+    }
+    .content-part input, select{
+        font-size: 1rem;
+    }
+    .system-message{
+        text-align:center;
+        margin:10px 0;
+        color:#888;
+        font-size:12px;
     }
 
 } 

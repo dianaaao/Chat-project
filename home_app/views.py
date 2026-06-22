@@ -1,9 +1,11 @@
 import flask, werkzeug.security as security, flask_login, datetime
+from datetime import timezone, timedelta
+
 from .apps import *
 from .models import User, Group, UserGroup, Message
 from app.db import DATABASE
 from config import send_verification_email
-from .sockets import online_users, socketio
+from .sockets import online_users, socketio, LOCAL_TZ
 
 
 
@@ -57,6 +59,7 @@ def render_registration():
     return flask.render_template("registration.html", registration = True)
 
 
+
 @registration.route("/check_email")
 def check_email():
     user_id = flask.request.args.get("user_id")
@@ -70,10 +73,13 @@ def check_email():
     return flask.render_template("registration.html", registration = True)
 
 
+
 @main_page.route("/main_page", methods = ["GET", "POST"])
 @flask_login.login_required # для безпеки, щоб не можна було зайти на головну сторінку без авторизації
 def render_home():
     return flask.render_template("main_page.html", main_page = True)
+
+
 
 @main_page.route("/save_settings", methods = ["POST"])
 @flask_login.login_required
@@ -131,6 +137,8 @@ def render_login():
 def render_success_page():
     return flask.render_template("success_page.html", success_page = True)
 
+
+
 # Маршрут доступний тільки через POST запит (fetch з JS)
 @main_page.route("/create_chat", methods = ["POST"])
 @flask_login.login_required  # якщо юзер не залогінений — редірект на логін
@@ -165,6 +173,7 @@ def create_chat():
     return flask.jsonify({"id": new_group.id, "name": new_group.group_name}), 201
 
 
+
 @main_page.route("/delete_chat", methods=["DELETE"])
 @flask_login.login_required
 def delete_chat():
@@ -190,6 +199,7 @@ def delete_chat():
     return flask.jsonify({"ok": True}), 200
 
 
+
 @main_page.route("/my_chat", methods=["GET"])
 @flask_login.login_required
 def my_chat():
@@ -201,6 +211,7 @@ def my_chat():
     # Чату немає — повертаємо порожній об'єкт
     # JS перевірить: if (data.id) — і нічого не покаже
     return flask.jsonify({}), 200
+
 
 
 @main_page.route("/search_chats", methods=["GET"])
@@ -223,6 +234,7 @@ def search_chats():
         "id": g.id, 
         "name": g.group_name
     } for g in results])
+
 
 
 # <int:chat_id> — Flask автоматично бере id з URL і передає в функцію як int
@@ -255,6 +267,8 @@ def logout():
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login.render_login'))
 
+
+
 @main_page.route('/chats/<int:chat_id>/')
 @flask_login.login_required
 def chat_page(chat_id):
@@ -265,6 +279,8 @@ def chat_page(chat_id):
         chat=chat, 
         messages=messages
     )
+
+
 
 # Маршрут для отримання списку всіх чатів з останніми повідомленнями
 # Викликається при завантаженні сторінки з result.js
@@ -291,10 +307,11 @@ def get_chats():
             "last_message": last_msg.text if last_msg else "",
             # якщо повідомлення є — беремо час у форматі ISO (наприклад "2024-01-15T14:30:00")
             # JS функція timeAgo() перетворить це в "5m ago" і т.д.
-            "last_time": last_msg.timestamp.isoformat() if last_msg else ""
+            "last_time": last_msg.timestamp.replace(tzinfo=timezone.utc).astimezone(LOCAL_TZ).isoformat() if last_msg else ""
         })
     # Повертаємо список словників у форматі JSON
     return flask.jsonify(result)
+
 
 
 # Маршрут для отримання всіх повідомлень конкретного чату
@@ -310,8 +327,10 @@ def get_messages(group_id):
         "author": m.author.username or m.author.email,
         "user_id": m.user_id,
         # форматуємо час у вигляді 09:24 AM / 02:30 PM
-        "time": m.timestamp.strftime('%I:%M %p'),
+        "time": m.timestamp.replace(tzinfo=timezone.utc).astimezone(LOCAL_TZ).strftime('%I:%M %p'),
     } for m in messages])
+
+
 
 @main_page.route('/chats/<int:chat_id>/leave', methods=['POST'])
 @flask_login.login_required
@@ -321,6 +340,8 @@ def leave_chat(chat_id):
         DATABASE.session.delete(member)
         DATABASE.session.commit()
     return flask.redirect(flask.url_for('main_page.main'))
+
+
 
 # Маршрут для отримання списку учасників конкретного чату
 # Викликається з JS коли юзер відкриває чат — fetch(`/get_members/${groupId}`)
@@ -358,6 +379,8 @@ def get_members(group_id):
             "count_online_user": count_online_users,
         })
     return flask.jsonify(result)
+
+
 
 @main_page.route("/get_user/<int:user_id>", methods=["GET"])
 @flask_login.login_required

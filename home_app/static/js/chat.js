@@ -226,6 +226,24 @@ socket.on("leave_room", (data) => {
     console.log(data.message)
 })
 
+// нова подія — приходить тільки коли потрібно показати системне повідомлення
+socket.on("system_message", (data) => {
+    addSystemMessage(data.text)
+})
+
+function addSystemMessage(text) {
+    const chatMessages = document.getElementById('chatMessages')
+
+    const div = document.createElement('div')
+    div.className = 'system-message'
+
+    div.innerHTML = `
+        <span>${text}</span>
+    `
+
+    chatMessages.appendChild(div)
+}
+
 // Відправляє повідомлення в поточний відкритий чат
 function sendMessage() {
     const messageInput = document.querySelector('.chat-input')
@@ -342,6 +360,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="choose-chat-subtext">Приєднайтеся до кімнати та почніть розмову</p>
                     </div>
                 `
+
+                    // на мобільному — повертаємось на вкладку зі списком чатів
+                if (window.innerWidth <= 480) {
+                    switchToTab(0)
+                }
             })
     })
 

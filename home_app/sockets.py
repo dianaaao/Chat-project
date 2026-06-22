@@ -1,8 +1,17 @@
+import flask, flask_login, flask_socketio
+from datetime import timezone, timedelta
+
 from app.settings import socketio
 from app.db import DATABASE
 from .apps import online_users
 from .models import Message, Group, UserGroup
-import flask, flask_login, flask_socketio
+
+
+# часовий пояс — Україна (UTC+2 або +3 залежно від DST)
+LOCAL_TZ = timezone(timedelta(hours=3))
+# словник { group_id: set(user_id1, user_id2, ...) }
+# зберігає хто вже заходив в яку кімнату за поточну роботу сервера
+users_in_room = {}
 
 @socketio.on("connect")
 def handle_connect():
@@ -35,20 +44,36 @@ def handle_disconnect():
 @socketio.on("join_room")
 def handle_join_room(data):
     group_id = data["groupId"]
+    user_id = flask_login.current_user.id
 
     group = Group.query.get(group_id)
+    username = flask_login.current_user.username or flask_login.current_user.email
 
     if group:
         flask_socketio.join_room(f'room_{group.id}')  # прибрали перевірку membership
 
-        flask_socketio.emit(
-            "join_room",
-            {
-                "room": f'room_{group.id}',
-                "message": "Підключився клієнт в кімнату"
-            },
-            to=f'room_{group.id}'
-        )
+    # перевіряємо чи юзер вже заходив у цю кімнату раніше
+        if group_id not in users_in_room:
+            users_in_room[group_id] = set()
+
+        is_first_time = user_id not in users_in_room[group_id]
+
+        if is_first_time:
+            users_in_room[group_id].add(user_id)
+
+            # показуємо повідомлення тільки при справді першому вході
+            flask_socketio.emit(
+                "system_message",
+                {"text": f"{username} приєднався до чату"},
+                to=f'room_{group.id}'
+            )
+
+            # "join_room",
+            # {
+            #     "room": f'room_{group.id}',
+            #     "message": "Підключився клієнт в кімнату",
+            #     "username": username
+            # }
         
         # сповіщаємо всіх в кімнаті що список учасників оновився
         flask_socketio.emit(
@@ -60,18 +85,29 @@ def handle_join_room(data):
 @socketio.on("leave_room")
 def handle_leave_room(data):
     group_id = data["groupId"]
+    user_id = flask_login.current_user.id
 
     group = Group.query.get(group_id)
+    username = flask_login.current_user.username or flask_login.current_user.email
 
     if group:
         flask_socketio.leave_room(f'room_{group.id}')
 
+        # видаляємо юзера зі словника — щоб при наступному вході знову показалось "приєднався"
+        if group_id in users_in_room:
+            users_in_room[group_id].discard(user_id)
+
         flask_socketio.emit(
-            "leave_room",
+            "system_message",
             {
-                "room": f'room_{group.id}',
-                "message": "Клієнт покинув кімнату"
+                "text": f"{username} покинув чат",
             },
+            # "leave_room",
+            # {
+            #     "room": f'room_{group.id}',
+            #     "message": "Клієнт покинув кімнату",
+            #     "username": username
+            # },
             to=f'room_{group.id}'
         )
 
@@ -100,7 +136,7 @@ def handle_send_message(data):
                 "text": text,
                 "author": author,
                 "userId": flask_login.current_user.id,
-                "time": msg.timestamp.strftime('%I:%M %p')
+                "time": msg.timestamp.replace(tzinfo=timezone.utc).astimezone(LOCAL_TZ).strftime('%I:%M %p')
             },
             to=f'room_{group.id}'
         )
