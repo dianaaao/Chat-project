@@ -244,7 +244,9 @@ def handle_send_message(data):
 ```
  
  ![Main page](readme_imgs/main_page.jpg)
-![Main page (mobile version)](readme_imgs/IMG_6049.gif)
+
+ <img src="readme_imgs/IMG_6049.gif" height="500">
+<!-- ![Main page (mobile version)](readme_imgs/IMG_6049.gif) -->
  
 [Return to table of contents](#contents)
  
