@@ -150,6 +150,10 @@ python manage.py
         app-->migrations;
         app-->static_app[static];
         app-->templates_app[templates];
+        app-->db.py;
+        app-->login.py;
+        app-->settings.py;
+        app-->urls.py;
         instance-->database.db;
         static_app-->css_app[css];
         static_app-->images_app[images];
