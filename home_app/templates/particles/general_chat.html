@@ -1,27 +1,34 @@
 <div class="chat-header" style="display: none;"">
         
-        <button class="btn-back" id="btn-back" style="display:none;">
-            <img src="{{ url_for('main_page.static', filename='images/Arrow-right.svg') }}" alt="back">
-        </button>
+    <button class="btn-back" id="btn-back" style="display:none;">
+        <img src="{{ url_for('main_page.static', filename='images/Arrow-right.svg') }}" alt="back">
+    </button>
+    <div class="title-with-online">
         <span class="chat-title"></span>
-        <div class="chat-header-icons">
-            <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
-            <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" id="moreInfoBtn" />
-        
-            <!-- міні-меню -->
-            <div class="mini-menu" id="miniMenu" style="display: none;">
-                <button class="mini-menu-close" id="leaveModalClose">&times;</button>
-                <button class="mini-menu-btn" id="leaveMenuBtn">Вийти</button>
-            </div>
+
+        <div class="count_users_online2">
+            <img src="{{ url_for('main_page.static', filename='images/people.svg') }}" alt="people" />
+            <span class="onl-u">Усі оффлайн</span> 
         </div>
     </div>
-    <!-- <div class="chat-header">
-        <span class="chat-title">General chat</span>
         <div class="chat-header-icons">
-            <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
-            <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" />
+        <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
+        <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" id="moreInfoBtn" />
+    
+        <!-- міні-меню -->
+        <div class="mini-menu" id="miniMenu" style="display: none;">
+            <button class="mini-menu-close" id="leaveModalClose">&times;</button>
+            <button class="mini-menu-btn" id="leaveMenuBtn">Вийти</button>
         </div>
-    </div>   -->
+    </div>
+</div>
+<!-- <div class="chat-header">
+    <span class="chat-title">General chat</span>
+    <div class="chat-header-icons">
+        <img src="{{ url_for('main_page.static', filename='images/Icon-search2.png') }}" class="header-icon" />
+        <img src="{{ url_for('main_page.static', filename='images/Icon-more-info.png') }}" class="header-icon" />
+    </div>
+</div>   -->
 
 <div class="chat-messages" id="chatMessages">
     

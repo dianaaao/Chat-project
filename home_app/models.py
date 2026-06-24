@@ -23,6 +23,7 @@ class UserGroup(DATABASE.Model):
 
     user_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("user.id"))
     group_id = DATABASE.Column(DATABASE.Integer, DATABASE.ForeignKey("group.id"))
+    has_joined = DATABASE.Column(DATABASE.Boolean, default=False) 
 
 
 class Group(DATABASE.Model):

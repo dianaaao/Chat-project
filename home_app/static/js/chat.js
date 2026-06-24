@@ -68,6 +68,7 @@ socket.on("chat_deleted", (data) => {
 function updateUserCount() {
     const all_users = document.querySelector(".count_users span").textContent = formatUsers(currentTotal)
     const online = document.querySelector(".count_users_online span").textContent = `${currentOnline} онлайн`
+    const online2 = document.querySelector(".count_users_online2 span").textContent = `${currentOnline} онлайн`
 }
 function formatUsers(count) {
     if (count % 10 === 1 && count % 100 !== 11) return `${count} користувач`
@@ -80,7 +81,7 @@ function formatUsers(count) {
 function openChat(groupId, groupName) {
     // якщо раніше був відкритий інший чат — виходимо з його кімнати
     if (linkGroupId) {
-        socket.emit("leave_room", { groupId: linkGroupId })
+        socket.emit("switch_room", { groupId: linkGroupId })
     }
 
     linkGroupId = groupId
@@ -100,7 +101,7 @@ function openChat(groupId, groupName) {
         .then(messages => {
             const chatMessages = document.getElementById('chatMessages')
             chatMessages.innerHTML = ''  // очищаємо попередні повідомлення
-            messages.forEach(msg => addMessage(msg.text, msg.author, msg.user_id, msg.time))
+            messages.forEach(msg => addMessage(msg.text, msg.author, msg.user_id, msg.time, msg.avatar_url))
             chatMessages.scrollTop = chatMessages.scrollHeight  // скролимо вниз
         })
 
@@ -125,6 +126,10 @@ function openChat(groupId, groupName) {
     }
 }
 
+socket.on("avatar_updated", (data) => {
+    loadMembers(linkGroupId)
+})
+
 function loadMembers(groupId) {
     fetch(`/get_members/${groupId}`)
         .then(res => res.json())
@@ -140,13 +145,19 @@ function loadMembers(groupId) {
 
             members.forEach(member => {
                 const initial = member.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+
+                // якщо є аватарка — показуємо <img>, інакше — літери
+                const avatarHtml = member.avatar_url
+                    ? `<img src="${member.avatar_url}" alt="avatar">`
+                    : initial
+
                 const div = document.createElement('div')
                 div.className = `user-item ${member.is_owner ? 'owner' : ''}`
                 div.dataset.userId = member.id
                 div.onclick = () => openUserInfo(member.id)
                 div.innerHTML = `
                     <div class="user-avatar-wrapper">
-                        <div class="user-avatar">${initial}</div>
+                        <div class="user-avatar">${avatarHtml}</div>
                         <span class="user-status ${member.is_online ? 'online' : ''}"></span>
                     </div>
                     <span class="user-name">${member.name}</span>
@@ -163,7 +174,14 @@ function openUserInfo(userId) {
         .then(user => {
             console.log('user data:', user)
             const initial = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-            document.querySelector('.info-avatar').textContent = initial
+            const avatarBox = document.querySelector('.info-avatar')
+
+            if (user.avatar_url) {
+                avatarBox.innerHTML = `<img src="${user.avatar_url}" alt="avatar">`
+            } else {
+                avatarBox.textContent = initial
+            }
+
             document.querySelector('.info-name').textContent = user.name
             document.querySelector('.info-username').textContent = `@${user.email.split('@')[0]}`
 
@@ -258,7 +276,7 @@ function sendMessage() {
 
 // Спрацьовує коли сервер надсилає нове повідомлення всім учасникам кімнати
 socket.on("new_message", (data) => {
-    addMessage(data.text, data.author, data.userId, data.time)
+    addMessage(data.text, data.author, data.userId, data.time, data.avatar_url)
     document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight
 
     // оновлюємо превʼю останнього повідомлення в сайдбарі
@@ -277,7 +295,7 @@ function updateChatPreview(groupId, text) {
 }
 
 // Створює і додає div повідомлення в контейнер чату
-function addMessage(text, author, userId, time) {
+function addMessage(text, author, userId, time, avatarUrl = null) {
     // порівнюємо як числа — userId може прийти як рядок
     const isOwn = Number(userId) === Number(CURRENT_USER_ID)
     const chatMessages = document.getElementById('chatMessages')
@@ -286,11 +304,16 @@ function addMessage(text, author, userId, time) {
     const placeholder = document.querySelector('.choose-chat')
     if (placeholder) placeholder.style.display = 'none'
 
+    // якщо є аватарка — показуємо <img>, інакше — літери як раніше
+    const avatarHtml = avatarUrl
+        ? `<img src="${avatarUrl}" alt="avatar">`
+        : author[0].toUpperCase()
+
     const div = document.createElement('div')
     // власні повідомлення отримують додатковий клас message-own для виділення стилями
     div.className = 'message' + (isOwn ? ' message-own' : '')
     div.innerHTML = `
-        <div class="avatar ${isOwn ? 'av-teal' : 'av-blue'}">${author[0].toUpperCase()}</div>
+        <div class="avatar ${isOwn ? 'av-teal' : 'av-blue'}">${avatarHtml}</div>
         <div class="message-body ${isOwn ? 'message-body-own' : ''}">
             <div class="message-top">
                 <span class="message-author">${isOwn ? 'You' : author}</span>

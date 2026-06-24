@@ -11,7 +11,7 @@ from .models import Message, Group, UserGroup
 LOCAL_TZ = timezone(timedelta(hours=3))
 # словник { group_id: set(user_id1, user_id2, ...) }
 # зберігає хто вже заходив в яку кімнату за поточну роботу сервера
-users_in_room = {}
+# users_in_room = {}
 
 @socketio.on("connect")
 def handle_connect():
@@ -53,13 +53,19 @@ def handle_join_room(data):
         flask_socketio.join_room(f'room_{group.id}')  # прибрали перевірку membership
 
     # перевіряємо чи юзер вже заходив у цю кімнату раніше
-        if group_id not in users_in_room:
-            users_in_room[group_id] = set()
+        # if group_id not in users_in_room:
+        #     users_in_room[group_id] = set()
 
-        is_first_time = user_id not in users_in_room[group_id]
+        # is_first_time = user_id not in users_in_room[group_id]
 
-        if is_first_time:
-            users_in_room[group_id].add(user_id)
+        # if is_first_time:
+        #     users_in_room[group_id].add(user_id)
+        # шукаємо запис учасника в БД
+        member = UserGroup.query.filter_by(user_id=user_id, group_id=group_id).first()
+
+        if member and not member.has_joined:
+            member.has_joined = True
+            DATABASE.session.commit()
 
             # показуємо повідомлення тільки при справді першому вході
             flask_socketio.emit(
@@ -94,8 +100,14 @@ def handle_leave_room(data):
         flask_socketio.leave_room(f'room_{group.id}')
 
         # видаляємо юзера зі словника — щоб при наступному вході знову показалось "приєднався"
-        if group_id in users_in_room:
-            users_in_room[group_id].discard(user_id)
+        # if group_id in users_in_room:
+        #     users_in_room[group_id].discard(user_id)
+
+        # скидаємо прапорець — щоб при наступному вході знову показалось повідомлення
+        member = UserGroup.query.filter_by(user_id=user_id, group_id=group_id).first()
+        if member:
+            member.has_joined = False
+            DATABASE.session.commit()
 
         flask_socketio.emit(
             "system_message",
@@ -136,11 +148,18 @@ def handle_send_message(data):
                 "text": text,
                 "author": author,
                 "userId": flask_login.current_user.id,
+                "avatar_url": f"/main_page/static/images/avatars/{flask_login.current_user.avatar_path}" if flask_login.current_user.avatar_path else None,
                 "time": msg.timestamp.replace(tzinfo=timezone.utc).astimezone(LOCAL_TZ).strftime('%I:%M %p')
             },
             to=f'room_{group.id}'
         )
 
+@socketio.on("switch_room")
+def handle_switch_room(data):
+    group_id = data["groupId"]
+    group = Group.query.get(group_id)
+    if group:
+        flask_socketio.leave_room(f'room_{group.id}')
 
 
         

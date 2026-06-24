@@ -191,6 +191,17 @@ main {
     background-color: #4DA6FF;
     color: white;
 }
+
+.acc_img1 img,
+.acc_img2 img,
+.avatar img,
+.user-avatar img,
+.info-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover; /*обрізає зображення так, щоб воно заповнило круг без спотворення пропорцій */
+}
 /* .content1{
     display: flex;
     flex-direction: column;

@@ -19,6 +19,17 @@
     padding-top: env(safe-area-inset-top);
 }
 
+.title-with-online {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.onl-u{
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #999999;
+}
+
 .chat-title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -43,6 +54,16 @@
 
 .more-info-wrapper {
     position: relative;
+}
+
+.users_counts_online2 {
+    display: flex;
+    gap: 1.6vw;
+}
+.users_counts_online2 span{
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #999999;
 }
 
 .mini-menu {
@@ -289,6 +310,12 @@
     }
     .chat-messages {
         padding: 1.8vh;
+    }
+
+    .title-with-online {
+        gap: 2px;
+        align-items: center;
+        justify-content: center;
     }
 
     .chat_and_delete{

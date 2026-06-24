@@ -1,4 +1,4 @@
-import flask, werkzeug.security as security, flask_login, datetime
+import flask, werkzeug.security as security, flask_login, datetime, os, uuid
 from datetime import timezone, timedelta
 
 from .apps import *
@@ -8,6 +8,8 @@ from config import send_verification_email
 from .sockets import online_users, socketio, LOCAL_TZ
 
 
+ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.webp'}
+AVATAR_FOLDER = os.path.join('home_app', 'static', 'images', 'avatars')
 
 @registration.route("/", methods = ["GET", "POST"])
 def render_registration():
@@ -328,6 +330,7 @@ def get_messages(group_id):
         "user_id": m.user_id,
         # форматуємо час у вигляді 09:24 AM / 02:30 PM
         "time": m.timestamp.replace(tzinfo=timezone.utc).astimezone(LOCAL_TZ).strftime('%I:%M %p'),
+        "avatar_url": f"/main_page/static/images/avatars/{m.author.avatar_path}" if m.author.avatar_path else None,
     } for m in messages])
 
 
@@ -377,6 +380,7 @@ def get_members(group_id):
             "is_online": user.id in online_users, # чи є в словнику
             "all_users": all_users,
             "count_online_user": count_online_users,
+            "avatar_url": f"/main_page/static/images/avatars/{user.avatar_path}" if user.avatar_path else None,
         })
     return flask.jsonify(result)
 
@@ -391,4 +395,67 @@ def get_user(user_id):
         "email": user.email,
         "birth_date": user.birth_date or "",
         "gender": user.gender or "",
+        "avatar_url": f"/main_page/static/images/avatars/{user.avatar_path}" if user.avatar_path else None,
     })
+
+
+
+@main_page.route("/upload_avatar", methods=["POST"])
+@flask_login.login_required
+def upload_avatar():
+    file = flask.request.files.get("avatar")
+
+    if not file or file.filename == "":
+        return flask.jsonify({"error": "no_file"}), 400
+
+    # беремо розширення файлу і перевіряємо чи воно дозволене
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return flask.jsonify({"error": "invalid_format"}), 400
+
+    # генеруємо унікальне ім'я файлу щоб уникнути конфліктів
+    # uuid.uuid4().hex — генерує випадковий унікальний рядок, щоб два юзери з однаковою назвою файлу не перезаписали один одного
+    filename = f"{flask_login.current_user.id}_{uuid.uuid4().hex}{ext}"
+    socketio.emit(
+        "avatar_updated",
+        {
+            "user_id": flask_login.current_user.id,
+            "avatar_url": f"/main_page/static/images/avatars/{filename}"
+        }
+    )
+
+    # створюємо папку якщо її ще немає
+    os.makedirs(AVATAR_FOLDER, exist_ok=True)
+
+    filepath = os.path.join(AVATAR_FOLDER, filename)
+    file.save(filepath)
+
+    # видаляємо стару аватарку якщо вона була
+    old_avatar = flask_login.current_user.avatar_path
+    if old_avatar:
+        old_path = os.path.join(AVATAR_FOLDER, old_avatar)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    # зберігаємо тільки назву файлу в БД
+    flask_login.current_user.avatar_path = filename
+    DATABASE.session.commit()
+    
+    return flask.jsonify({"ok": True, "avatar_url": f"/main_page/static/images/avatars/{filename}"}), 200
+
+
+
+@main_page.route("/delete_avatar", methods=["DELETE"])
+@flask_login.login_required
+def delete_avatar():
+    avatar = flask_login.current_user.avatar_path
+
+    if avatar:
+        filepath = os.path.join(AVATAR_FOLDER, avatar)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+        flask_login.current_user.avatar_path = None
+        DATABASE.session.commit()
+
+    return flask.jsonify({"ok": True}), 200

@@ -49,6 +49,10 @@
     background-color: black;
     color: white;
 }
+.send-button a {
+    text-decoration: none;
+    color: white;
+}
 
 
 
