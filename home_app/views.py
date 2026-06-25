@@ -295,7 +295,10 @@ def get_chats():
     # беремо тільки чати де поточний юзер є учасником
     user_groups = UserGroup.query.filter_by(user_id=flask_login.current_user.id).all()
     group_ids = [ug.group_id for ug in user_groups]
-    chats = Group.query.filter(Group.id.in_(group_ids)).all()
+    chats = Group.query.filter(
+        Group.id.in_(group_ids),
+        Group.owner_id != flask_login.current_user.id
+    ).all()
 
     result = []
     for g in chats:

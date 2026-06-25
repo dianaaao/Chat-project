@@ -7,16 +7,16 @@
 {% block content %}
     <div class="container">
         <h1>Створити обліковий запис</h1>
+        <!-- <button class="log-in-btn" type="button"><a href="login">Увійти</a></button> -->
 
         <form method="post" class="form-input">
             <p>Введіть вашу електронну пошту нижче, щоб створити обліковий запис</p>
             <input name="email" type ="text" placeholder="name@example.com">
             <p>Задайте ваш пароль нижче, щоб створити обліковий запис</p>
-            <input name="password" type="password" placeholder="************">
-            <div class="buttons">
+            <input name="password" type="password" placeholder="************" minlength="8">
+            <!-- <div class="buttons"> -->
                 <button class="send-button" type="submit">Надіслати код підтвердження</button>
-                <button class="log-in-btn" type="button"><a href="login">Увійти</a></button>
-            </div>
+            <!-- </div> -->
         </form>
 
         <div class="policy">

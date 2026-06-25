@@ -77,6 +77,10 @@ body {
 
 
 @media (max-width: 480px) {
+    .header-content{
+        align-items: start;
+        margin-left: 2vw;
+    }
     .header-content img{
         height: 3.6vh;
         width: 53.9vw;
@@ -85,10 +89,14 @@ body {
         display: none;
     } */
     .log-in {
-        display: none;
+        /* display: flex; */
+        
+        width: auto;
+        height: 4vh;
     }
     .register {
-        display: none;
+        width: auto;
+        height: 4vh;
     }
     .footer img{
         height: 38.9vh;

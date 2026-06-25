@@ -117,15 +117,13 @@
     }
 
     .send-button{
-        width: 60%;
-        
+        /* width: 60%; */
         height: 4.3vh;
     }
 
     .log-in-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute;
+        right:  2.6vw;;
 
         margin-top: 15px;
         height: 4.3vh;

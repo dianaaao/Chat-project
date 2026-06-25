@@ -22,7 +22,8 @@
                     {% elif login and not current_user.is_authenticated %}
                         <div class="header">
                             <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
-                            <button class="register" type="button"><a href="/">Створити обліковий запис</a></button>
+                            <button class="register" type="button"><a href="/">Зареєструватися</a></button>
+                            <!-- <button class="register-m" type="button" style="display: none;"><a href="/">Зареєструватися</a></button> -->
                         </div>
                     {% elif current_user.is_authenticated %}
                         <div class="header">

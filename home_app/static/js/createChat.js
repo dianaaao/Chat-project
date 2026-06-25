@@ -44,8 +44,8 @@ document.getElementById("btnCreate").addEventListener("click", async () => {
         document.getElementById("my-chat-item").onclick = () => openChat(data.id, data.name)
 
         // Створюємо елемент чату і додаємо його на початок загального списку
-        const newChatDiv = createChatItem(data.id, data.name)
-        document.querySelector('.all-chats').prepend(newChatDiv)
+        // const newChatDiv = createChatItem(data.id, data.name)
+        // document.querySelector('.all-chats').prepend(newChatDiv)
 
         // Закриваємо модалку створення чату
         closeCreateModal()
